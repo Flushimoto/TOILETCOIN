@@ -4,137 +4,99 @@ html, body { height: 100% }
 body {
   margin: 0;
   color: #f2f2f2;
-  background: #000; /* fallback if image missing */
+  background: #000; /* fallback */
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
   line-height: 1.55;
 }
 
-/* Full background (no shade) */
-.bg-img {
-  position: fixed; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;             /* fills screens nicely */
-  z-index: -1;
-  filter: none;
-}
-
-/* Layout */
+/* Containers & sections */
 .container { width: min(1100px, 92vw); margin: 0 auto }
 .section { padding: 64px 0 }
-.section.alt { background: rgba(0,0,0,.35) }
 
-/* Retro buttons (blocky / pixel-ish) */
+/* Header */
+.site-header {
+  position: sticky; top: 0; z-index: 20;
+  background: linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.25), rgba(0,0,0,0));
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 4vw }
+.brand { color: #fff; text-decoration: none; font-weight: 900; letter-spacing: .02em; font-size: clamp(18px, 2.2vw, 24px) }
+.nav { display: flex; gap: clamp(10px,2vw,16px); align-items: center; flex-wrap: wrap }
+
+/* Buttons (classic) */
 .btn {
   display: inline-block;
   text-decoration: none;
   color: #111;
-  background: #ffe066;
+  background: #ffd24a;
   padding: 10px 14px;
-  border: 2px solid #111;
-  box-shadow: 0 4px 0 #111, 0 6px 0 rgba(0,0,0,.35);
-  transform: translateY(0);
-  transition: transform .05s ease, box-shadow .05s ease, filter .2s ease;
-  font-weight: 900;
+  border: 1px solid #111;
+  border-radius: 10px;
+  font-weight: 800;
   letter-spacing: .02em;
-  border-radius: 6px;
+  transition: filter .2s ease, transform .06s ease;
 }
-.btn:hover { filter: brightness(1.05) }
-.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #111, 0 3px 0 rgba(0,0,0,.35) }
-.btn.retro { font-variation-settings: 'wght' 900 }
+.btn:hover { filter: brightness(1.06) }
+.btn:active { transform: translateY(1px) }
 .btn.ghost {
-  background: #111;
+  background: #121212;
   color: #fff;
-  border-color: #ffe066;
-  box-shadow: 0 4px 0 #ffe066;
+  border-color: rgba(255,255,255,.2);
 }
 
-/* Nav */
-.nav {
-  position: sticky; top: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 4vw;
-  background: linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.15), rgba(0,0,0,0));
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-.brand {
-  text-decoration: none; color: #fff; font-weight: 900;
-  letter-spacing: .02em; font-size: clamp(18px, 2.2vw, 24px);
-}
-.nav-links {
-  display: flex; gap: clamp(10px, 2vw, 16px); align-items: center; flex-wrap: wrap;
-}
-
-/* Hero */
-.hero { padding: 18vh 0 10vh; }
-.hero-inner { width: min(900px, 92vw); margin: 0 auto; text-align: center }
-.display {
-  margin: 0 0 8px 0; color: #fff;
-  font-weight: 1000; font-size: clamp(36px, 6vw, 76px); letter-spacing: .01em;
-  text-shadow: 0 6px 40px rgba(0,0,0,.55);
-}
+/* Landing (fixed, no scroll) */
+.landing { position: relative; min-height: 100vh; display: grid; place-items: center; overflow: hidden }
+.bg-img { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1 }
+.hero-center { text-align: center; padding: 16px; width: min(920px, 92vw) }
+.display { margin: 0 0 8px 0; color: #fff; font-weight: 1000; font-size: clamp(36px, 6vw, 76px); text-shadow: 0 6px 40px rgba(0,0,0,.55) }
 .sub { margin: 0 0 22px 0; opacity: .95; font-size: clamp(15px, 2.4vw, 18px) }
 .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center }
 
-/* Contract card (big, copy-on-click) */
+/* Contract card (large, copyable) */
 .contract-card {
-  position: relative;
-  margin: 18px auto 14px auto;
+  position: relative; margin: 18px auto 14px auto;
   background: rgba(0,0,0,.55);
-  border: 2px solid #ffe066;
+  border: 2px solid #ffd24a; border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 0 0 2px rgba(0,0,0,.4);
-  border-radius: 10px;
-  padding: 10px 12px;
-  width: min(100%, 900px);
+  padding: 12px 14px; width: min(100%, 920px);
 }
 .contract-label { font-size: 12px; opacity: .75; margin-bottom: 6px; text-align: left }
 .contract-value {
-  width: 100%; text-align: center;
-  background: transparent; border: 0; color: #fff; cursor: pointer;
-  padding: 8px; border-radius: 8px;
+  width: 100%; text-align: center; background: transparent; border: 0; color: #fff; cursor: pointer; padding: 8px; border-radius: 8px;
 }
-.contract-value:hover { background: rgba(255,224,102,.1) }
-.mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: clamp(14px, 2.4vw, 20px) }
+.contract-value:hover { background: rgba(255,210,74,.12) }
+.mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: clamp(14px, 2.4vw, 22px) }
 .copied {
-  position: absolute; right: 10px; top: 10px;
-  background: #1fb980; color: #111; font-weight: 800; padding: 4px 8px; border-radius: 6px;
+  position: absolute; right: 10px; top: 10px; background: #1fb980; color: #111; font-weight: 800; padding: 4px 8px; border-radius: 6px;
   opacity: 0; transform: translateY(-6px); transition: all .18s ease;
 }
 .copied.on { opacity: 1; transform: translateY(0) }
 
-/* Story + Wipepaper */
-.h2 { margin: 0 0 8px 0; font-size: clamp(22px, 3.2vw, 32px); font-weight: 1000; color: #fff }
+/* Standard pages */
+.page { padding: 24px 0 48px }
+.h1 { margin: 12px 0 8px 0; font-size: clamp(26px, 4vw, 40px); font-weight: 1000; color: #fff }
 .lead { font-size: clamp(16px, 2.6vw, 18px); opacity: .92 }
+
+/* Wipepaper block */
 .paper {
-  white-space: pre-wrap;
-  font-family: ui-monospace, Menlo, Consolas, monospace;
-  font-size: 13px; color: #eee;
-  background: rgba(0,0,0,.55);
-  border: 1px dashed rgba(255,224,102,.7);
+  white-space: pre-wrap; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #eee;
+  background: rgba(0,0,0,.5); border: 1px dashed rgba(255,210,74,.7);
   border-radius: 10px; padding: 16px; overflow: auto;
 }
 
-/* Buy / Jupiter */
-.buy .muted { opacity: .8; margin-bottom: 12px }
-.jupiter-frame {
-  width: 100%;
-  border: 2px solid #ffe066;
-  border-radius: 10px;
-  overflow: hidden;
-  background: rgba(0,0,0,.6);
-  height: 640px; /* reasonable default; widget is responsive */
-}
-.jupiter-frame iframe {
-  width: 100%; height: 100%; border: 0;
-}
-
-/* Alt links */
-.alt-links {
-  margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-}
-.alt-links a { color: #ffe066; text-decoration: none; font-weight: 800 }
+/* Jupiter embed */
+.jupiter-frame { width: 100%; height: 70vh; min-height: 520px; border: 2px solid #ffd24a; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
+.jupiter-frame iframe { width: 100%; height: 100%; border: 0 }
+.alt-links { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+.alt-links a { color: #ffd24a; text-decoration: none; font-weight: 800 }
 .alt-links a:hover { text-decoration: underline }
+.muted { opacity: .8 }
+
+/* Dexscreener embed */
+.dex-frame { width: 100%; height: 80vh; min-height: 560px; border: 2px solid #ffd24a; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
+.dex-frame iframe { width: 100%; height: 100%; border: 0 }
 
 /* Footer */
-.footer { padding: 18px 0 28px; background: rgba(0,0,0,.45); border-top: 1px solid rgba(255,255,255,.08) }
+.site-footer { border-top: 1px solid rgba(255,255,255,.08); background: #000; padding: 18px 0 28px }
 .foot { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: 12px; opacity: .9 }
 .small { opacity: .75 }
