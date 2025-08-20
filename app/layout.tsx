@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'TOILETCOIN',
-  description: 'The Final Flush. Born mid-poop by Satoshi Flushimoto. Utility: none.'
+  description: 'The Final Flush — a satirical meme coin with myth-level lore.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
