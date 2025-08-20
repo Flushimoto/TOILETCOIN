@@ -9,56 +9,75 @@ body {
   line-height: 1.55;
 }
 
-/* Containers & sections */
-.container { width: min(1100px, 92vw); margin: 0 auto }
-.section { padding: 64px 0 }
+/* Full background */
+.bg-img {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; filter: none; z-index: -1;
+}
 
-/* Header */
-.site-header {
-  position: sticky; top: 0; z-index: 20;
+/* Screen lock / center */
+.screen { position: relative; min-height: 100vh; display: grid; place-items: center; padding: 16px }
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 4vw;
   background: linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.25), rgba(0,0,0,0));
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
-.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 4vw }
-.brand { color: #fff; text-decoration: none; font-weight: 900; letter-spacing: .02em; font-size: clamp(18px, 2.2vw, 24px) }
+.brand { font-weight: 1000; letter-spacing: .02em; color: #fff; font-size: clamp(18px,2.2vw,24px) }
 .nav { display: flex; gap: clamp(10px,2vw,16px); align-items: center; flex-wrap: wrap }
 
-/* Buttons (classic) */
+/* Buttons — classic, with hover lighting + active state */
 .btn {
-  display: inline-block;
-  text-decoration: none;
-  color: #111;
-  background: #ffd24a;
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: #fff;
   padding: 10px 14px;
-  border: 1px solid #111;
   border-radius: 10px;
   font-weight: 800;
   letter-spacing: .02em;
-  transition: filter .2s ease, transform .06s ease;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .08s ease, box-shadow .15s ease, filter .2s ease, background .15s ease;
+  box-shadow: 0 0 0 rgba(255,255,255,0);
 }
-.btn:hover { filter: brightness(1.06) }
+.btn:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 0 18px rgba(255, 210, 74, .35); /* hover lighting */
+}
 .btn:active { transform: translateY(1px) }
-.btn.ghost {
-  background: #121212;
-  color: #fff;
-  border-color: rgba(255,255,255,.2);
+.btn.primary {
+  background: #ffd24a; color: #111; border-color: #ffd24a;
+  box-shadow: 0 0 0 rgba(255,210,74,0);
+}
+.btn.primary:hover { box-shadow: 0 0 22px rgba(255,210,74,.5) }
+.btn.navbtn.active {
+  background: #ffd24a; color: #111; border-color: #ffd24a;
 }
 
-/* Landing (fixed, no scroll) */
-.landing { position: relative; min-height: 100vh; display: grid; place-items: center; overflow: hidden }
-.bg-img { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1 }
-.hero-center { text-align: center; padding: 16px; width: min(920px, 92vw) }
-.display { margin: 0 0 8px 0; color: #fff; font-weight: 1000; font-size: clamp(36px, 6vw, 76px); text-shadow: 0 6px 40px rgba(0,0,0,.55) }
-.sub { margin: 0 0 22px 0; opacity: .95; font-size: clamp(15px, 2.4vw, 18px) }
-.hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center }
+/* Center hero content */
+.center { text-align: center; width: min(920px, 92vw); margin-top: 8vh }
+.display {
+  margin: 0 0 8px 0; color: #fff;
+  font-weight: 1000; font-size: clamp(36px, 6vw, 76px);
+  text-shadow: 0 6px 40px rgba(0,0,0,.55);
+}
+.tag { margin: 0 0 18px 0; opacity: .96; font-size: clamp(15px, 2.4vw, 18px) }
+.cta-row { display: flex; justify-content: center; margin-top: 12px }
+.wide { min-width: 260px }
 
-/* Contract card (large, copyable) */
-.contract-card {
-  position: relative; margin: 18px auto 14px auto;
+/* Contract (big, copy on click) */
+.contract {
+  position: relative;
+  margin: 18px auto 6px auto;
   background: rgba(0,0,0,.55);
-  border: 2px solid #ffd24a; border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 0 0 2px rgba(0,0,0,.4);
-  padding: 12px 14px; width: min(100%, 920px);
+  border: 2px solid #ffd24a;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 0 0 2px rgba(0,0,0,.35);
+  padding: 12px 14px;
+  width: min(100%, 920px);
 }
 .contract-label { font-size: 12px; opacity: .75; margin-bottom: 6px; text-align: left }
 .contract-value {
@@ -67,36 +86,69 @@ body {
 .contract-value:hover { background: rgba(255,210,74,.12) }
 .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: clamp(14px, 2.4vw, 22px) }
 .copied {
-  position: absolute; right: 10px; top: 10px; background: #1fb980; color: #111; font-weight: 800; padding: 4px 8px; border-radius: 6px;
+  position: absolute; right: 10px; top: 10px;
+  background: #1fb980; color: #111; font-weight: 800; padding: 4px 8px; border-radius: 6px;
   opacity: 0; transform: translateY(-6px); transition: all .18s ease;
 }
 .copied.on { opacity: 1; transform: translateY(0) }
 
-/* Standard pages */
-.page { padding: 24px 0 48px }
-.h1 { margin: 12px 0 8px 0; font-size: clamp(26px, 4vw, 40px); font-weight: 1000; color: #fff }
-.lead { font-size: clamp(16px, 2.6vw, 18px); opacity: .92 }
+/* Overlay panels */
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid; place-items: center;
+  animation: fade .18s ease;
+}
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
 
-/* Wipepaper block */
-.paper {
-  white-space: pre-wrap; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #eee;
-  background: rgba(0,0,0,.5); border: 1px dashed rgba(255,210,74,.7);
-  border-radius: 10px; padding: 16px; overflow: auto;
+.backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(2px);
 }
 
-/* Jupiter embed */
-.jupiter-frame { width: 100%; height: 70vh; min-height: 520px; border: 2px solid #ffd24a; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
-.jupiter-frame iframe { width: 100%; height: 100%; border: 0 }
-.alt-links { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
-.alt-links a { color: #ffd24a; text-decoration: none; font-weight: 800 }
+.panel {
+  position: relative;
+  width: min(92vw, 1100px);
+  max-height: min(86vh, 860px);
+  background: rgba(12,12,12,.98);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.6);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transform: translateY(12px);
+  opacity: 0;
+  animation: pop .22s ease forwards;
+}
+@keyframes pop {
+  to { transform: translateY(0); opacity: 1 }
+}
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.panel-title { margin: 0; font-size: clamp(18px,2.6vw,24px); font-weight: 900; color: #fff }
+.btn.close { background: #111; border-color: rgba(255,255,255,.18); border-radius: 10px; padding: 6px 10px }
+.panel-body {
+  overflow: auto;  /* scroll INSIDE panel only if needed */
+  padding: 16px;
+}
+
+/* Text blocks */
+.copy { line-height: 1.7; font-size: 15px }
+.paper {
+  white-space: pre-wrap;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px; color: #eee;
+  background: rgba(0,0,0,.5);
+  border: 1px dashed rgba(255,210,74,.7);
+  border-radius: 10px; padding: 16px;
+}
+
+/* Embeds */
+.embed .muted { opacity: .8; margin-bottom: 10px }
+.frame { width: 100%; height: 70vh; min-height: 520px; border: 2px solid #ffd24a; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
+.frame iframe { width: 100%; height: 100%; border: 0 }
+.alt-links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+.alt-links a { color: #ffd24a; font-weight: 800; text-decoration: none }
 .alt-links a:hover { text-decoration: underline }
-.muted { opacity: .8 }
-
-/* Dexscreener embed */
-.dex-frame { width: 100%; height: 80vh; min-height: 560px; border: 2px solid #ffd24a; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
-.dex-frame iframe { width: 100%; height: 100%; border: 0 }
-
-/* Footer */
-.site-footer { border-top: 1px solid rgba(255,255,255,.08); background: #000; padding: 18px 0 28px }
-.foot { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: 12px; opacity: .9 }
-.small { opacity: .75 }
