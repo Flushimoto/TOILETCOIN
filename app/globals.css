@@ -66,3 +66,9 @@ body {
   /* No background here either */
 }
 .mono { font-family: ui-monospace, Consolas, Menlo, monospace }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;  /* 🚀 prevents any scrolling */
+}
