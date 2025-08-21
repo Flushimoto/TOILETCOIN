@@ -4,25 +4,37 @@ import { useEffect, useState } from 'react';
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | null;
 
 const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...'; // TODO: replace with real mint
+const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';       // TODO: replace with your token mint
+
+declare global {
+  interface Window { Jupiter?: any }
+}
 
 export default function Page() {
   const [open, setOpen] = useState<Panel>(null);
   const [copied, setCopied] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Lock scroll on entire app (landing only)
+  // Lock scrolling on the whole page
   useEffect(() => {
-    const prev = document.documentElement.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    const prevBody = document.body.style.overflow;
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     return () => {
-      document.documentElement.style.overflow = prev;
-      document.body.style.overflow = prev;
+      document.documentElement.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
     };
   }, []);
 
-  // ESC to close panel
+  // ESC to close panel or mobile menu
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(null);
+        setMenuOpen(false);
+      }
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
@@ -43,25 +55,36 @@ export default function Page() {
         <img src="/hero-desktop.jpg" alt="" className="bg-img" />
       </picture>
 
-      {/* Header / NAV */}
+      {/* Header */}
       <header className="topbar">
         <div className="brand">TOILETCOIN</div>
-        <nav className="nav">
+
+        <button
+          className={`hamburger ${menuOpen ? 'on' : ''}`}
+          aria-label="Menu"
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <nav className={`nav ${menuOpen ? 'open' : ''}`}>
           <button
             className={`btn navbtn ${open === 'story' ? 'active' : ''}`}
-            onClick={() => setOpen('story')}
+            onClick={() => { setOpen('story'); setMenuOpen(false); }}
           >
             Story
           </button>
           <button
             className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`}
-            onClick={() => setOpen('wipepaper')}
+            onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}
           >
             Wipepaper
           </button>
           <button
             className={`btn navbtn ${open === 'chart' ? 'active' : ''}`}
-            onClick={() => setOpen('chart')}
+            onClick={() => { setOpen('chart'); setMenuOpen(false); }}
           >
             Chart
           </button>
@@ -110,7 +133,7 @@ export default function Page() {
             <div className="panel-body">
               {open === 'story' && <Story />}
               {open === 'wipepaper' && <Wipepaper />}
-              {open === 'buy' && <Buy />}
+              {open === 'buy' && <Buy outputMint={OUTPUT_MINT} />}
               {open === 'chart' && <Chart />}
             </div>
           </div>
@@ -147,19 +170,43 @@ Charity Meme: Adopt-A-Toilet (includes framed bowl NFT).
   );
 }
 
-function Buy() {
+/** BUY — Jupiter Terminal via official snippet (no app iframe) */
+function Buy({ outputMint }: { outputMint: string }) {
+  useEffect(() => {
+    // If script already loaded, init directly
+    function init() {
+      if (window.Jupiter && typeof window.Jupiter.init === 'function') {
+        window.Jupiter.init({
+          container: document.getElementById('jup-widget'),
+          endpoint: 'https://api.mainnet-beta.solana.com',
+          formProps: {
+            fixedOutputMint: !!outputMint,
+            fixedInputMint: false,
+            initialOutputMint: outputMint || undefined
+          },
+          defaultExplorer: 'Solscan',
+          strictTokenList: false
+        });
+      }
+    }
+
+    // Load the Jupiter Terminal script if not present
+    if (!window.Jupiter) {
+      const s = document.createElement('script');
+      s.src = 'https://terminal.jup.ag/main-v2.js';
+      s.async = true;
+      s.onload = init;
+      document.body.appendChild(s);
+      return () => { /* noop cleanup */ };
+    } else {
+      init();
+    }
+  }, [outputMint]);
+
   return (
     <div className="embed">
-      <p className="muted">Swap via Jupiter. Replace the mint in the URL once you have it.</p>
-      <div className="frame">
-        {/* TODO: replace <YOUR_MINT_ADDRESS> with your real mint */}
-        <iframe
-          title="Jupiter Swap"
-          src="https://jup.ag/swap/SOL-<YOUR_MINT_ADDRESS>"
-          allow="clipboard-read; clipboard-write; fullscreen; payment;"
-          loading="lazy"
-        />
-      </div>
+      <p className="muted">Swap via Jupiter Terminal.</p>
+      <div id="jup-widget" className="terminal"></div>
 
       <div className="alt-links">
         Prefer another route?
