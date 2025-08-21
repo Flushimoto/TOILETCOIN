@@ -1,40 +1,34 @@
 /* Base */
 * { box-sizing: border-box }
 html, body { height: 100% }
-html, body {
-  margin: 0;
-  background: #000; /* ensure black root background */
-}
+html, body { margin: 0; background: #000 }
 body {
   color: #f2f2f2;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
   line-height: 1.55;
-  -webkit-tap-highlight-color: transparent; /* kill mobile tap halo */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Full-screen CSS background (no <img>) */
 .bg {
   position: fixed;
-  top: -1px; left: -1px; right: -1px; bottom: -1px; /* 1px bleed to kill edge seams */
-  background-color: #000; /* safe when no asset uploaded */
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  background-color: #000;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  /* Optional: when you upload assets, uncomment and adjust:
-     background-image: url('/hero-desktop.jpg');
+  z-index: -1;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  /* When you upload assets, uncomment:
+  background-image: url('/hero-desktop.jpg');
   */
-}
-@media (max-width: 1024px) {
-  /* background-image: url('/hero-tablet.jpg'); */
-}
-@media (max-width: 640px) {
-  /* background-image: url('/hero-mobile.jpg'); */
 }
 
 /* Screen lock / center */
 .screen { position: relative; min-height: 100vh; display: grid; place-items: center }
 
-/* Header — clean, no borders/gradients */
+/* Header — clean */
 .topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 5;
   display: flex; align-items: center; justify-content: space-between;
@@ -47,7 +41,7 @@ body {
 .nav { display: flex; gap: clamp(10px,2vw,16px); align-items: center; flex-wrap: wrap }
 .hamburger {
   display: none;
-  width: 40px; height: 34px; border: 0; background: transparent; cursor: pointer; position: relative;
+  width: 40px; height: 34px; border: 0; background: transparent; cursor: pointer; position: relative; z-index: 6; /* above mobile menu */
 }
 .hamburger span {
   position: absolute; left: 8px; right: 8px; height: 2px; background: #fff; transition: transform .2s ease, opacity .2s ease;
@@ -71,11 +65,12 @@ body {
     display: none;
     flex-direction: column;
     gap: 8px;
+    z-index: 5; /* sits above page, below hamburger */
   }
   .nav.open { display: flex }
 }
 
-/* Buttons — hover lighting + active state */
+/* Buttons */
 .btn {
   appearance: none;
   border: 1px solid rgba(255,255,255,.18);
@@ -90,22 +85,14 @@ body {
   transition: transform .08s ease, box-shadow .15s ease, filter .2s ease, background .15s ease;
   box-shadow: 0 0 0 rgba(255,255,255,0);
 }
-.btn:hover {
-  filter: brightness(1.07);
-  box-shadow: 0 0 18px rgba(255, 210, 74, .35);
-}
+.btn:hover { filter: brightness(1.07); box-shadow: 0 0 18px rgba(255, 210, 74, .35) }
 .btn:active { transform: translateY(1px) }
-.btn.primary {
-  background: #ffd24a; color: #111; border-color: #ffd24a;
-  box-shadow: 0 0 0 rgba(255,210,74,0);
-}
+.btn.primary { background: #ffd24a; color: #111; border-color: #ffd24a }
 .btn.primary:hover { box-shadow: 0 0 22px rgba(255,210,74,.5) }
-.btn.navbtn.active {
-  background: #ffd24a; color: #111; border-color: #ffd24a;
-}
+.btn.navbtn.active { background: #ffd24a; color: #111; border-color: #ffd24a }
 
-/* Center hero content */
-.center { text-align: center; width: min(920px, 92vw); margin-top: 8vh }
+/* Center hero content — ensure above any mobile menu */
+.center { text-align: center; width: min(920px, 92vw); margin-top: 8vh; z-index: 4 }
 .display {
   margin: 0 0 8px 0; color: #fff;
   font-weight: 1000; font-size: clamp(36px, 6vw, 76px);
@@ -125,6 +112,7 @@ body {
   box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 0 0 2px rgba(0,0,0,.35);
   padding: 12px 14px;
   width: min(100%, 920px);
+  z-index: 4; /* keep above any nav overlay */
 }
 .contract-label { font-size: 12px; opacity: .75; margin-bottom: 6px; text-align: left }
 .contract-value {
