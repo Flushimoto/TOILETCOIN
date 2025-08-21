@@ -48,12 +48,8 @@ export default function Page() {
 
   return (
     <main className="screen">
-      {/* Full-bleed background (no shade) */}
-      <picture aria-hidden>
-        <source media="(max-width: 640px)" srcSet="/hero-mobile.jpg" />
-        <source media="(max-width: 1024px)" srcSet="/hero-tablet.jpg" />
-        <img src="/hero-desktop.jpg" alt="" className="bg-img" />
-      </picture>
+      {/* Full-screen CSS background (no <img>, no seams) */}
+      <div className="bg" aria-hidden />
 
       {/* Header */}
       <header className="topbar">
@@ -173,7 +169,6 @@ Charity Meme: Adopt-A-Toilet (includes framed bowl NFT).
 /** BUY — Jupiter Terminal via official snippet (no app iframe) */
 function Buy({ outputMint }: { outputMint: string }) {
   useEffect(() => {
-    // If script already loaded, init directly
     function init() {
       if (window.Jupiter && typeof window.Jupiter.init === 'function') {
         window.Jupiter.init({
@@ -190,14 +185,13 @@ function Buy({ outputMint }: { outputMint: string }) {
       }
     }
 
-    // Load the Jupiter Terminal script if not present
     if (!window.Jupiter) {
       const s = document.createElement('script');
       s.src = 'https://terminal.jup.ag/main-v2.js';
       s.async = true;
       s.onload = init;
       document.body.appendChild(s);
-      return () => { /* noop cleanup */ };
+      return () => { /* no-op */ };
     } else {
       init();
     }
