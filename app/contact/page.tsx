@@ -1,73 +1,85 @@
-"use client"
-import React, { useState } from "react"
+'use client';
 
-export default function ContactOverlay({ onClose }: { onClose: () => void }) {
-  const [result, setResult] = useState("")
+import { useState } from 'react';
+import Link from 'next/link';
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setResult("Sending...")
+const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69';
 
-    const formData = new FormData(event.currentTarget)
-    // ✅ Your real Web3Forms access key
-    formData.append("access_key", "f8741ccf-8e2d-476e-920b-aac3c75eaf69")
+export default function ContactPage() {
+  const [result, setResult] = useState<string>('');
+  const [sending, setSending] = useState(false);
 
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData,
-    })
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSending(true);
+    setResult('Sending…');
 
-    const data = await response.json()
+    const form = e.currentTarget as HTMLFormElement;
 
-    if (data.success) {
-      setResult("✅ Form Submitted Successfully")
-      event.currentTarget.reset()
-    } else {
-      console.log("Error", data)
-      setResult("❌ " + data.message)
+    const body = {
+      access_key: WEB3FORMS_KEY,
+      name: (form.elements.namedItem('name') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data?.success) {
+        setResult('✅ Form Submitted Successfully');
+        form.reset();
+      } else {
+        setResult(`❌ ${data?.message || 'Submission failed.'}`);
+      }
+    } catch {
+      setResult('❌ Network error. Try again.');
+    } finally {
+      setSending(false);
     }
   }
 
   return (
-    <div className="overlay">
-      <div className="backdrop" onClick={onClose}></div>
-      <div className="panel" style={{ maxWidth: "600px" }}>
-        <div className="panel-head">
-          <h2 className="panel-title">Contact Us</h2>
-          <button className="btn close" onClick={onClose}>✕</button>
-        </div>
+    <main className="screen">
+      <div className="bg" aria-hidden />
 
-        <div className="panel-body">
-          <form onSubmit={onSubmit} className="grid gap-4">
-            <input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              required
-              className="p-2 rounded bg-black/40 border border-white/20"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              required
-              className="p-2 rounded bg-black/40 border border-white/20"
-            />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              required
-              className="p-2 rounded bg-black/40 border border-white/20 h-32"
-            ></textarea>
+      <section className="center" style={{ textAlign: 'left' }}>
+        <h1 className="display" style={{ fontSize: 'clamp(28px,4.8vw,52px)' }}>Contact Us</h1>
+        <p className="tag">Questions, partnerships, shrines, or plumbing lore—drop a message.</p>
 
-            <button type="submit" className="btn wide">
-              Send Message
-            </button>
+        <div style={{ width: '100%', display: 'grid', placeItems: 'center', marginTop: 12 }}>
+          <form onSubmit={handleSubmit} className="form" style={{ maxWidth: 520 }}>
+            <div className="field">
+              <label htmlFor="name">Name</label>
+              <input id="name" name="name" required placeholder="Satoshi Flushimoto" />
+            </div>
+
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" required placeholder="you@example.com" />
+            </div>
+
+            <div className="field">
+              <label htmlFor="message">Message</label>
+              <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
+            </div>
+
+            <div className="form-row">
+              <button className="btn buy" type="submit" disabled={sending}>
+                {sending ? 'Sending…' : 'Send Message'}
+              </button>
+              <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
+              <Link className="btn" href="/">Back</Link>
+            </div>
+
+            {result && <p className="form-error" style={{ marginTop: 8 }}>{result}</p>}
           </form>
-
-          <span className="mt-3 block text-sm">{result}</span>
         </div>
-      </div>
-    </div>
-  )
+      </section>
+    </main>
+  );
 }
