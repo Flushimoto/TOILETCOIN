@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from 'react';
 
-type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | null;
+type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
-const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';   // TODO: replace with the real mint/contract
-const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';         // TODO: replace with your token mint for Jupiter
+const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real mint
+const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';           // TODO: for Jupiter widget
+const FORMSPREE_ID = '<YOUR_FORMSPREE_ID>';          // e.g. "mxyzabcd" from https://formspree.io
 
 declare global {
   interface Window {
-    Jupiter?: {
-      init?: (opts: any) => void;
-    };
+    Jupiter?: { init?: (opts: any) => void };
   }
 }
 
@@ -20,7 +19,7 @@ export default function Page() {
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Lock page scroll globally (single-screen layout)
+  // Lock single-screen layout
   useEffect(() => {
     const prevHtml = document.documentElement.style.overflow;
     const prevBody = document.body.style.overflow;
@@ -32,7 +31,7 @@ export default function Page() {
     };
   }, []);
 
-  // ESC to close panel or mobile menu
+  // ESC closes panel/menu
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -45,8 +44,7 @@ export default function Page() {
   }, []);
 
   function copyContract() {
-    navigator.clipboard
-      .writeText(CONTRACT)
+    navigator.clipboard.writeText(CONTRACT)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1200);
@@ -56,7 +54,7 @@ export default function Page() {
 
   return (
     <main className="screen">
-      {/* Full-screen CSS background (set in globals.css via .bg) */}
+      {/* Background (set in globals.css via .bg) */}
       <div className="bg" aria-hidden />
 
       {/* Header */}
@@ -66,7 +64,7 @@ export default function Page() {
         <button
           className={`hamburger ${menuOpen ? 'on' : ''}`}
           aria-label="Menu"
-          onClick={() => setMenuOpen((v) => !v)}
+          onClick={() => setMenuOpen(v => !v)}
         >
           <span />
           <span />
@@ -76,37 +74,30 @@ export default function Page() {
         <nav className={`nav ${menuOpen ? 'open' : ''}`}>
           <button
             className={`btn navbtn ${open === 'story' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('story');
-              setMenuOpen(false);
-            }}
+            onClick={() => { setOpen('story'); setMenuOpen(false); }}
           >
             Story
           </button>
           <button
             className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('wipepaper');
-              setMenuOpen(false);
-            }}
+            onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}
           >
             Wipepaper
           </button>
           <button
             className={`btn navbtn ${open === 'chart' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('chart');
-              setMenuOpen(false);
-            }}
+            onClick={() => { setOpen('chart'); setMenuOpen(false); }}
           >
             Chart
           </button>
-          <a className="btn navbtn" href="https://x.com/" target="_blank" rel="noreferrer">
-            X
-          </a>
-          <a className="btn navbtn" href="https://t.me/" target="_blank" rel="noreferrer">
-            TG
-          </a>
+          <button
+            className={`btn navbtn ${open === 'contact' ? 'active' : ''}`}
+            onClick={() => { setOpen('contact'); setMenuOpen(false); }}
+          >
+            Contact
+          </button>
+          <a className="btn navbtn" href="https://x.com/" target="_blank" rel="noreferrer">X</a>
+          <a className="btn navbtn" href="https://t.me/" target="_blank" rel="noreferrer">TG</a>
         </nav>
       </header>
 
@@ -126,13 +117,16 @@ export default function Page() {
           <div className={`copied ${copied ? 'on' : ''}`}>Copied!</div>
         </div>
 
-        {/* ✅ Single, wide BUY button (GREEN) */}
+        {/* Buy CTA — green */}
         <div className="cta-row">
-          <button className="btn buy wide" onClick={() => setOpen('buy')}>
-            Buy Toiletcoin
-          </button>
+          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy Toiletcoin</button>
         </div>
       </section>
+
+      {/* Footer (branding + email) */}
+      <footer className="footer">
+        <p className="footnote">© 2025 toiletcoin.wtf · <a href="mailto:contact@toiletcoin.wtf">contact@toiletcoin.wtf</a></p>
+      </footer>
 
       {/* Overlays */}
       {open && (
@@ -145,10 +139,9 @@ export default function Page() {
                 {open === 'wipepaper' && 'Wipepaper'}
                 {open === 'buy' && 'Buy Toiletcoin'}
                 {open === 'chart' && 'Chart'}
+                {open === 'contact' && 'Contact Us'}
               </h2>
-              <button className="btn close" onClick={() => setOpen(null)} aria-label="Close">
-                ✕
-              </button>
+              <button className="btn close" onClick={() => setOpen(null)} aria-label="Close">✕</button>
             </div>
 
             <div className="panel-body">
@@ -156,6 +149,7 @@ export default function Page() {
               {open === 'wipepaper' && <Wipepaper />}
               {open === 'buy' && <Buy outputMint={OUTPUT_MINT} />}
               {open === 'chart' && <Chart />}
+              {open === 'contact' && <Contact formId={FORMSPREE_ID} />}
             </div>
           </div>
         </div>
@@ -167,20 +161,9 @@ export default function Page() {
 function Story() {
   return (
     <div className="copy">
-      <p>
-        Past midnight on a dead-still highway, Satoshi Flushimoto—more liquidations than wins—hunted for
-        relief when destiny (and indigestion) struck.
-      </p>
-      <p>
-        He found a forgotten gas station, a grimy stall, and—mid-poop, straining—the revelation: if the market is a toilet, it needs a Final Flush. Right there he deployed <strong>TOILETCOIN</strong> on Pump.fun, minted{' '}
-        <strong>1,000,000,000</strong> supply, bought the first <strong>1,000,000</strong> as a parody of
-        Satoshi’s stash, scrawled the contract and crooked toilet logo on a tile (the Genesis Tile), jotted the
-        Wipepaper on two-ply, and vanished into the night.
-      </p>
-      <p>
-        Days later a janitor found the artifacts, posted them online, and the legend spread. The owner built a
-        shrine over the sacred stall. Pilgrims now line up at the next-door stall; his profits? ~<strong>6,900,000×</strong>. At least someone matched Bitcoin’s growth.
-      </p>
+      <p>Past midnight on a dead-still highway, Satoshi Flushimoto—more liquidations than wins—hunted for relief when destiny (and indigestion) struck.</p>
+      <p>He found a forgotten gas station, a grimy stall, and—mid-poop, straining—the revelation: if the market is a toilet, it needs a Final Flush. Right there he deployed <strong>TOILETCOIN</strong> on Pump.fun, minted <strong>1,000,000,000</strong> supply, bought the first <strong>1,000,000</strong> as a parody of Satoshi’s stash, scrawled the contract and crooked toilet logo on a tile (the Genesis Tile), jotted the Wipepaper on two-ply, and vanished into the night.</p>
+      <p>Days later a janitor found the artifacts, posted them online, and the legend spread. The owner built a shrine over the sacred stall. Pilgrims now line up at the next-door stall; his profits? ~<strong>6,900,000×</strong>. At least someone matched Bitcoin’s growth.</p>
     </div>
   );
 }
@@ -220,18 +203,16 @@ function Buy({ outputMint }: { outputMint: string }) {
         });
       }
     };
-
-    // load once
     if (!window.Jupiter) {
       const s = document.createElement('script');
       s.src = 'https://terminal.jup.ag/main-v2.js';
       s.async = true;
       s.onload = init;
       document.body.appendChild(s);
-      return () => { /* keep terminal for next open */ };
+      return () => {};
     } else {
       init();
-      return () => { /* keep terminal for next open */ };
+      return () => {};
     }
   }, [outputMint]);
 
@@ -256,9 +237,87 @@ function Chart() {
     <div className="embed">
       <p className="muted">Live data from Dexscreener.</p>
       <div className="frame">
-        {/* TODO: replace with your actual pair URL when live */}
         <iframe title="Dexscreener" src="https://dexscreener.com/solana" loading="lazy" />
       </div>
     </div>
+  );
+}
+
+/** CONTACT — static-friendly form to Formspree */
+function Contact({ formId }: { formId: string }) {
+  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setErr(null);
+    setSending(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${formId}`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data,
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setSent(true);
+        form.reset();
+      } else {
+        setErr(json?.errors?.[0]?.message || 'Failed to send. Try again later.');
+      }
+    } catch (e) {
+      setErr('Network error. Please try again.');
+    } finally {
+      setSending(false);
+    }
+  }
+
+  if (sent) {
+    return (
+      <div className="form success">
+        <p>Thanks! Your message has been sent.</p>
+        <p>We’ll get back to you at the email you provided.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      {/* Honeypot for bots */}
+      <input type="text" name="_gotcha" className="hp" tabIndex={-1} autoComplete="off" />
+
+      <div className="field">
+        <label htmlFor="name">Name</label>
+        <input id="name" name="name" required placeholder="Satoshi Flushimoto" />
+      </div>
+
+      <div className="field">
+        <label htmlFor="email">Email</label>
+        <input id="email" name="_replyto" type="email" required placeholder="you@example.com" />
+      </div>
+
+      <div className="field">
+        <label htmlFor="message">Message</label>
+        <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
+      </div>
+
+      {/* Direct email route if Formspree fails */}
+      <input type="hidden" name="_subject" value="Toiletcoin Contact" />
+      <input type="hidden" name="_template" value="table" />
+
+      <div className="form-row">
+        <button className="btn buy" type="submit" disabled={sending}>
+          {sending ? 'Sending…' : 'Send Message'}
+        </button>
+        <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
+      </div>
+
+      {err && <p className="form-error">{err}</p>}
+    </form>
   );
 }
