@@ -5,13 +5,12 @@ import { useEffect, useState } from 'react';
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
 const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real mint
-const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';           // TODO: for Jupiter widget
-
-// Web3Forms Access Key (JSON submission pattern from docs)
-const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69';
+const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69'; // contact overlay
 
 declare global {
-  interface Window { Jupiter?: { init?: (opts: any) => void } }
+  interface Window {
+    Jupiter?: { init?: (opts: any) => void }
+  }
 }
 
 export default function Page() {
@@ -34,25 +33,21 @@ export default function Page() {
   // ESC closes panel/menu
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setOpen(null);
-        setMenuOpen(false);
-      }
+      if (e.key === 'Escape') { setOpen(null); setMenuOpen(false); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   function copyContract() {
-    navigator.clipboard
-      .writeText(CONTRACT)
-      .then(() => { setCopied(true); setTimeout(() => setCopied(false), 1200); })
-      .catch(() => {});
+    navigator.clipboard.writeText(CONTRACT).then(() => {
+      setCopied(true); setTimeout(() => setCopied(false), 1200);
+    }).catch(() => {});
   }
 
   return (
     <main className="screen">
-      {/* Background (set in globals.css via .bg) */}
+      {/* Background via globals.css (.bg) */}
       <div className="bg" aria-hidden />
 
       {/* Header */}
@@ -68,29 +63,21 @@ export default function Page() {
         </button>
 
         <nav className={`nav ${menuOpen ? 'open' : ''}`}>
-          <button className={`btn navbtn ${open === 'story' ? 'active' : ''}`} onClick={() => { setOpen('story'); setMenuOpen(false); }}>
-            Story
-          </button>
-          <button className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`} onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}>
-            Wipepaper
-          </button>
-          <button className={`btn navbtn ${open === 'chart' ? 'active' : ''}`} onClick={() => { setOpen('chart'); setMenuOpen(false); }}>
-            Chart
-          </button>
-          <button className={`btn navbtn ${open === 'contact' ? 'active' : ''}`} onClick={() => { setOpen('contact'); setMenuOpen(false); }}>
-            Contact
-          </button>
+          <button className={`btn navbtn ${open === 'story' ? 'active' : ''}`} onClick={() => { setOpen('story'); setMenuOpen(false); }}>Story</button>
+          <button className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`} onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}>Wipepaper</button>
+          <button className={`btn navbtn ${open === 'chart' ? 'active' : ''}`} onClick={() => { setOpen('chart'); setMenuOpen(false); }}>Chart</button>
+          <button className={`btn navbtn ${open === 'contact' ? 'active' : ''}`} onClick={() => { setOpen('contact'); setMenuOpen(false); }}>Contact</button>
           <a className="btn navbtn" href="https://x.com/" target="_blank" rel="noreferrer">X</a>
           <a className="btn navbtn" href="https://t.me/" target="_blank" rel="noreferrer">TG</a>
         </nav>
       </header>
 
-      {/* Center hero */}
+      {/* Hero */}
       <section className="center">
         <h1 className="display">The Final Flush</h1>
         <p className="tag">Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.</p>
 
-        {/* Contract — LARGE + copy on click */}
+        {/* Contract — big + copy-on-click */}
         <div className="contract">
           <div className="contract-label">Contract</div>
           <button className="contract-value" onClick={copyContract} title="Click to copy">
@@ -105,7 +92,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Footer (branding + footer email opens Contact overlay) */}
+      {/* Footer */}
       <footer className="footer">
         <p className="footnote">
           © 2025 toiletcoin.wtf ·{' '}
@@ -132,9 +119,9 @@ export default function Page() {
             <div className="panel-body">
               {open === 'story' && <Story />}
               {open === 'wipepaper' && <Wipepaper />}
-              {open === 'buy' && <Buy outputMint={OUTPUT_MINT} />}
               {open === 'chart' && <Chart />}
               {open === 'contact' && <ContactJSON accessKey={WEB3FORMS_KEY} />}
+              {open === 'buy' && <BuyPlugin />}
             </div>
           </div>
         </div>
@@ -143,12 +130,14 @@ export default function Page() {
   );
 }
 
+/* ---------- Panels ---------- */
+
 function Story() {
   return (
     <div className="copy">
       <p>Past midnight on a dead-still highway, Satoshi Flushimoto—more liquidations than wins—hunted for relief when destiny (and indigestion) struck.</p>
-      <p>He found a forgotten gas station, a grimy stall, and—mid-poop, straining—the revelation: if the market is a toilet, it needs a Final Flush. Right there he deployed <strong>TOILETCOIN</strong> on Pump.fun, minted <strong>1,000,000,000</strong> supply, bought the first <strong>1,000,000</strong> as a parody of Satoshi’s stash, scrawled the contract and crooked toilet logo on a tile (the Genesis Tile), jotted the Wipepaper on two-ply, and vanished into the night.</p>
-      <p>Days later a janitor found the artifacts, posted them online, and the legend spread. The owner built a shrine over the sacred stall. Pilgrims now line up at the next-door stall; his profits? ~<strong>6,900,000×</strong>. At least someone matched Bitcoin’s growth.</p>
+      <p>He found a forgotten gas station, a grimy stall, and—mid-poop, straining—the revelation: if the market is a toilet, it needs a Final Flush. He deployed <strong>TOILETCOIN</strong> on Pump.fun, minted <strong>1,000,000,000</strong>, bought the first <strong>1,000,000</strong>, scrawled the contract on a tile, wrote the Wipepaper on two-ply, and vanished.</p>
+      <p>Days later a janitor posted the artifacts. The owner built a shrine. Pilgrims now queue for the next stall. Profits? ~<strong>6,900,000×</strong>.</p>
     </div>
   );
 }
@@ -170,66 +159,18 @@ Charity Meme: Adopt-A-Toilet (includes framed bowl NFT).
   );
 }
 
-/** BUY — Jupiter Terminal via official snippet */
-function Buy({ outputMint }: { outputMint: string }) {
-  useEffect(() => {
-    const init = () => {
-      if (window.Jupiter && typeof window.Jupiter.init === 'function') {
-        window.Jupiter.init({
-          container: document.getElementById('jup-widget'),
-          endpoint: 'https://api.mainnet-beta.solana.com',
-          formProps: {
-            fixedOutputMint: !!outputMint,
-            fixedInputMint: false,
-            initialOutputMint: outputMint || undefined,
-          },
-          defaultExplorer: 'Solscan',
-          strictTokenList: false,
-        });
-      }
-    };
-    if (!window.Jupiter) {
-      const s = document.createElement('script');
-      s.src = 'https://terminal.jup.ag/main-v2.js';
-      s.async = true;
-      s.onload = init;
-      document.body.appendChild(s);
-      return () => {};
-    } else {
-      init();
-      return () => {};
-    }
-  }, [outputMint]);
-
-  return (
-    <div className="embed">
-      <p className="muted">Swap via Jupiter Terminal.</p>
-      <div id="jup-widget" className="terminal" />
-      <div className="alt-links">
-        Prefer another route?
-        <a href="https://pump.fun/" target="_blank" rel="noreferrer">Pump.fun</a>
-        <span>·</span>
-        <a href="https://dexscreener.com/" target="_blank" rel="noreferrer">Dexscreener</a>
-        <span>·</span>
-        <a href="https://phantom.app/" target="_blank" rel="noreferrer">Phantom</a>
-      </div>
-    </div>
-  );
-}
-
 function Chart() {
   return (
     <div className="embed">
       <p className="muted">Live data from Dexscreener.</p>
       <div className="frame">
-        {/* TODO: replace with your actual pair URL when live */}
         <iframe title="Dexscreener" src="https://dexscreener.com/solana" loading="lazy" />
       </div>
     </div>
   );
 }
 
-/** CONTACT — Web3Forms JSON pattern (from docs) inside overlay panel */
+/** CONTACT — Web3Forms JSON */
 function ContactJSON({ accessKey }: { accessKey: string }) {
   const [result, setResult] = useState<string>('');
   const [sending, setSending] = useState(false);
@@ -254,17 +195,11 @@ function ContactJSON({ accessKey }: { accessKey: string }) {
         body: JSON.stringify(body),
       });
       const data = await response.json();
-      if (data?.success) {
-        setResult('✅ Form Submitted Successfully');
-        form.reset();
-      } else {
-        setResult(`❌ ${data?.message || 'Submission failed.'}`);
-      }
+      if (data?.success) { setResult('✅ Form Submitted Successfully'); form.reset(); }
+      else { setResult(`❌ ${data?.message || 'Submission failed.'}`); }
     } catch {
       setResult('❌ Network error. Try again.');
-    } finally {
-      setSending(false);
-    }
+    } finally { setSending(false); }
   }
 
   return (
@@ -274,26 +209,53 @@ function ContactJSON({ accessKey }: { accessKey: string }) {
           <label htmlFor="name">Name</label>
           <input id="name" name="name" required placeholder="Satoshi Flushimoto" />
         </div>
-
         <div className="field">
           <label htmlFor="email">Email</label>
           <input id="email" name="email" type="email" required placeholder="you@example.com" />
         </div>
-
         <div className="field">
           <label htmlFor="message">Message</label>
           <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
         </div>
-
         <div className="form-row">
-          <button className="btn buy" type="submit" disabled={sending}>
-            {sending ? 'Sending…' : 'Send Message'}
-          </button>
+          <button className="btn buy" type="submit" disabled={sending}>{sending ? 'Sending…' : 'Send Message'}</button>
           <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
         </div>
-
         {result && <p className="form-error" style={{ marginTop: 8 }}>{result}</p>}
       </form>
+    </div>
+  );
+}
+
+/** BUY — Jupiter plugin v1 (integrated mode) */
+function BuyPlugin() {
+  useEffect(() => {
+    // Init once when the overlay mounts
+    if (window.Jupiter?.init) {
+      window.Jupiter.init({
+        displayMode: 'integrated',
+        integratedTargetId: 'jup-target',
+        branding: { name: 'TOILETCOIN SWAP' },
+      });
+    }
+  }, []);
+
+  return (
+    <div className="embed">
+      <p className="muted">Swap via Jupiter.</p>
+      {/* Target container for plugin render */}
+      <div
+        id="jup-target"
+        style={{ width: '100%', maxWidth: 500, height: 600, margin: '0 auto' }}
+      />
+      <div className="alt-links">
+        Prefer another route?
+        <a href="https://pump.fun/" target="_blank" rel="noreferrer">Pump.fun</a>
+        <span>·</span>
+        <a href="https://dexscreener.com/" target="_blank" rel="noreferrer">Dexscreener</a>
+        <span>·</span>
+        <a href="https://phantom.app/" target="_blank" rel="noreferrer">Phantom</a>
+      </div>
     </div>
   );
 }
