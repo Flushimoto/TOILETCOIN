@@ -17,7 +17,6 @@ body {
    - hero-mobile.jpg   (~640–750px wide)
 */
 
-/* Option B (three images) — ACTIVE */
 .bg {
   position: fixed; inset: 0;
   background-color: #000;
@@ -73,11 +72,11 @@ body {
   .nav.open { display: flex }
 }
 
-/* Buttons — hover lighting + active state */
+/* Buttons — base style */
 .btn {
   appearance: none;
   border: 1px solid rgba(255,255,255,.18);
-  background: #333; /* default for non-special buttons */
+  background: #333; /* default gray */
   color: #fff;
   padding: 10px 14px;
   border-radius: 10px;
@@ -88,25 +87,25 @@ body {
 }
 .btn:hover { filter: brightness(1.07); box-shadow: 0 0 18px rgba(255, 210, 74, .35) }
 .btn:active { transform: translateY(1px) }
+
+/* Primary (yellow) */
 .btn.primary { background: #ffd24a; color: #111; border-color: #ffd24a }
 .btn.primary:hover { box-shadow: 0 0 22px rgba(255,210,74,.5) }
 .btn.navbtn.active { background: #ffd24a; color: #111; border-color: #ffd24a }
 
-/* Green BUY button — trading platform style */
+/* ✅ Buy button — green like exchanges */
 .btn.buy {
   background: #16c784;
   color: #fff;
-  border-color: #16c784;
+  border: 1px solid #16c784;
 }
 .btn.buy:hover {
   filter: brightness(1.1);
   box-shadow: 0 0 22px rgba(22, 199, 132, 0.55);
 }
-.btn.buy:active {
-  transform: translateY(1px);
-}
+.btn.buy:active { transform: translateY(1px) }
 
-/* Center hero content — stays above any menus */
+/* Center hero content */
 .center { text-align: center; width: min(920px, 92vw); margin-top: 8vh; z-index: 4 }
 .display {
   margin: 0 0 8px 0; color: #fff;
