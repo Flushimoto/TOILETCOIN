@@ -4,25 +4,11 @@ import { useEffect, useState } from 'react';
 
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
-const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real mint
+const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real mint when ready
 const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';           // TODO: for Jupiter widget
 
-// ----- WEB3FORMS ACCESS KEY (raw) -----
-const RAW_WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69';
-
-// normalize/sanitize any weird hyphens or stray chars from paste
-function normalizeKey(raw: string) {
-  // Replace en/em/minus dashes with plain hyphen, strip anything not hex or hyphen, lowercase.
-  const k = raw
-    .replace(/[–—−]/g, '-')          // unicode dashes -> hyphen
-    .replace(/[^0-9a-f-]/gi, '')     // remove junk
-    .toLowerCase();
-  return k;
-}
-const WEB3FORMS_KEY = normalizeKey(RAW_WEB3FORMS_KEY);
-
-// strict UUID v4-ish pattern (Web3Forms accepts any UUID)
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+// === Web3Forms Access Key (JSON submission) ===
+const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69';
 
 declare global {
   interface Window {
@@ -71,7 +57,7 @@ export default function Page() {
 
   return (
     <main className="screen">
-      {/* Background (configured in globals.css via .bg) */}
+      {/* Background (set in globals.css via .bg) */}
       <div className="bg" aria-hidden />
 
       {/* Header */}
@@ -81,7 +67,7 @@ export default function Page() {
         <button
           className={`hamburger ${menuOpen ? 'on' : ''}`}
           aria-label="Menu"
-          onClick={() => setMenuOpen((v) => !v)}
+          onClick={() => setMenuOpen(v => !v)}
         >
           <span />
           <span />
@@ -89,48 +75,20 @@ export default function Page() {
         </button>
 
         <nav className={`nav ${menuOpen ? 'open' : ''}`}>
-          <button
-            className={`btn navbtn ${open === 'story' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('story');
-              setMenuOpen(false);
-            }}
-          >
+          <button className={`btn navbtn ${open === 'story' ? 'active' : ''}`} onClick={() => { setOpen('story'); setMenuOpen(false); }}>
             Story
           </button>
-          <button
-            className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('wipepaper');
-              setMenuOpen(false);
-            }}
-          >
+          <button className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`} onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}>
             Wipepaper
           </button>
-          <button
-            className={`btn navbtn ${open === 'chart' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('chart');
-              setMenuOpen(false);
-            }}
-          >
+          <button className={`btn navbtn ${open === 'chart' ? 'active' : ''}`} onClick={() => { setOpen('chart'); setMenuOpen(false); }}>
             Chart
           </button>
-          <button
-            className={`btn navbtn ${open === 'contact' ? 'active' : ''}`}
-            onClick={() => {
-              setOpen('contact');
-              setMenuOpen(false);
-            }}
-          >
+          <button className={`btn navbtn ${open === 'contact' ? 'active' : ''}`} onClick={() => { setOpen('contact'); setMenuOpen(false); }}>
             Contact
           </button>
-          <a className="btn navbtn" href="https://x.com/" target="_blank" rel="noreferrer">
-            X
-          </a>
-          <a className="btn navbtn" href="https://t.me/" target="_blank" rel="noreferrer">
-            TG
-          </a>
+          <a className="btn navbtn" href="https://x.com/" target="_blank" rel="noreferrer">X</a>
+          <a className="btn navbtn" href="https://t.me/" target="_blank" rel="noreferrer">TG</a>
         </nav>
       </header>
 
@@ -152,9 +110,7 @@ export default function Page() {
 
         {/* Buy CTA — green */}
         <div className="cta-row">
-          <button className="btn buy wide" onClick={() => setOpen('buy')}>
-            Buy Toiletcoin
-          </button>
+          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy Toiletcoin</button>
         </div>
       </section>
 
@@ -181,9 +137,7 @@ export default function Page() {
                 {open === 'chart' && 'Chart'}
                 {open === 'contact' && 'Contact Us'}
               </h2>
-              <button className="btn close" onClick={() => setOpen(null)} aria-label="Close">
-                ✕
-              </button>
+              <button className="btn close" onClick={() => setOpen(null)} aria-label="Close">✕</button>
             </div>
 
             <div className="panel-body">
@@ -191,7 +145,7 @@ export default function Page() {
               {open === 'wipepaper' && <Wipepaper />}
               {open === 'buy' && <Buy outputMint={OUTPUT_MINT} />}
               {open === 'chart' && <Chart />}
-              {open === 'contact' && <Contact accessKey={WEB3FORMS_KEY} />}
+              {open === 'contact' && <ContactJSON accessKey={WEB3FORMS_KEY} />}
             </div>
           </div>
         </div>
@@ -203,22 +157,9 @@ export default function Page() {
 function Story() {
   return (
     <div className="copy">
-      <p>
-        Past midnight on a dead-still highway, Satoshi Flushimoto—more liquidations than wins—hunted for
-        relief when destiny (and indigestion) struck.
-      </p>
-      <p>
-        He found a forgotten gas station, a grimy stall, and—mid-poop, straining—the revelation: if the
-        market is a toilet, it needs a Final Flush. Right there he deployed <strong>TOILETCOIN</strong> on
-        Pump.fun, minted <strong>1,000,000,000</strong> supply, bought the first <strong>1,000,000</strong> as
-        a parody of Satoshi’s stash, scrawled the contract and crooked toilet logo on a tile (the Genesis
-        Tile), jotted the Wipepaper on two-ply, and vanished into the night.
-      </p>
-      <p>
-        Days later a janitor found the artifacts, posted them online, and the legend spread. The owner built a
-        shrine over the sacred stall. Pilgrims now line up at the next-door stall; his profits? ~
-        <strong>6,900,000×</strong>. At least someone matched Bitcoin’s growth.
-      </p>
+      <p>Past midnight on a dead-still highway, Satoshi Flushimoto—more liquidations than wins—hunted for relief when destiny (and indigestion) struck.</p>
+      <p>He found a forgotten gas station, a grimy stall, and—mid-poop, straining—the revelation: if the market is a toilet, it needs a Final Flush. Right there he deployed <strong>TOILETCOIN</strong> on Pump.fun, minted <strong>1,000,000,000</strong> supply, bought the first <strong>1,000,000</strong> as a parody of Satoshi’s stash, scrawled the contract and crooked toilet logo on a tile (the Genesis Tile), jotted the Wipepaper on two-ply, and vanished into the night.</p>
+      <p>Days later a janitor found the artifacts, posted them online, and the legend spread. The owner built a shrine over the sacred stall. Pilgrims now line up at the next-door stall; his profits? ~<strong>6,900,000×</strong>. At least someone matched Bitcoin’s growth.</p>
     </div>
   );
 }
@@ -277,17 +218,11 @@ function Buy({ outputMint }: { outputMint: string }) {
       <div id="jup-widget" className="terminal" />
       <div className="alt-links">
         Prefer another route?
-        <a href="https://pump.fun/" target="_blank" rel="noreferrer">
-          Pump.fun
-        </a>
+        <a href="https://pump.fun/" target="_blank" rel="noreferrer">Pump.fun</a>
         <span>·</span>
-        <a href="https://dexscreener.com/" target="_blank" rel="noreferrer">
-          Dexscreener
-        </a>
+        <a href="https://dexscreener.com/" target="_blank" rel="noreferrer">Dexscreener</a>
         <span>·</span>
-        <a href="https://phantom.app/" target="_blank" rel="noreferrer">
-          Phantom
-        </a>
+        <a href="https://phantom.app/" target="_blank" rel="noreferrer">Phantom</a>
       </div>
     </div>
   );
@@ -305,76 +240,76 @@ function Chart() {
   );
 }
 
-/** CONTACT — Web3Forms, sanitized key + precise error display */
-function Contact({ accessKey }: { accessKey: string }) {
-  const [sending, setSending] = useState(false);
+/** CONTACT — Web3Forms JSON example (official pattern) */
+function ContactJSON({ accessKey }: { accessKey: string }) {
   const [result, setResult] = useState<string>('');
+  const [sending, setSending] = useState(false);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setResult('');
-    const key = normalizeKey(accessKey);
-
-    // Validate before sending
-    if (!UUID_RE.test(key)) {
-      setResult('❌ Invalid access key format (UUID). Check Web3Forms dashboard.');
-      return;
-    }
-
     setSending(true);
-    try {
-      const formData = new FormData(e.currentTarget);
-      formData.set('access_key', key);              // REQUIRED
-      // Optional: a subject for your inbox
-      formData.set('subject', 'Toiletcoin Contact');
+    setResult('Sending…');
 
-      const res = await fetch('https://api.web3forms.com/submit', {
+    const form = e.currentTarget as HTMLFormElement;
+    const body = {
+      access_key: accessKey,
+      name: (form.elements.namedItem('name') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const data = await response.json();
+
       if (data?.success) {
-        setResult('✅ Message sent successfully!');
-        (e.target as HTMLFormElement).reset();
+        setResult('✅ Form Submitted Successfully');
+        form.reset();
       } else {
-        setResult(`❌ ${data?.message || 'Failed to send. Check domain & key.'}`);
+        setResult(`❌ ${data?.message || 'Submission failed.'}`);
       }
     } catch (err) {
-      setResult('❌ Network error. Please try again.');
+      setResult('❌ Network error. Try again.');
     } finally {
       setSending(false);
     }
   }
 
   return (
-    <form className="form" onSubmit={onSubmit}>
-      {/* Honeypot to reduce spam */}
-      <input type="checkbox" name="botcheck" className="hp" tabIndex={-1} autoComplete="off" />
+    <div style={{ width: '100%', display: 'grid', placeItems: 'center' }}>
+      <form onSubmit={handleSubmit} className="form" style={{ maxWidth: 520 }}>
+        <div className="field">
+          <label htmlFor="name">Name</label>
+          <input id="name" name="name" required placeholder="Satoshi Flushimoto" />
+        </div>
 
-      <div className="field">
-        <label htmlFor="name">Name</label>
-        <input id="name" name="name" required placeholder="Satoshi Flushimoto" />
-      </div>
+        <div className="field">
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com" />
+        </div>
 
-      <div className="field">
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" required placeholder="you@example.com" />
-      </div>
+        <div className="field">
+          <label htmlFor="message">Message</label>
+          <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
+        </div>
 
-      <div className="field">
-        <label htmlFor="message">Message</label>
-        <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
-      </div>
+        <div className="form-row">
+          <button className="btn buy" type="submit" disabled={sending}>
+            {sending ? 'Sending…' : 'Send Message'}
+          </button>
+          <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
+        </div>
 
-      <div className="form-row">
-        <button className="btn buy" type="submit" disabled={sending}>
-          {sending ? 'Sending…' : 'Send Message'}
-        </button>
-        <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
-      </div>
-
-      {result && <p className="form-error" style={{ marginTop: 8 }}>{result}</p>}
-    </form>
+        {result && <p className="form-error" style={{ marginTop: 8 }}>{result}</p>}
+      </form>
+    </div>
   );
 }
