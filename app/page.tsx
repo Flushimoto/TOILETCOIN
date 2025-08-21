@@ -1,16 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
-const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real mint
-const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69'; // contact overlay
+const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real contract
+const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69'; // contact overlay key
 
 declare global {
-  interface Window {
-    Jupiter?: { init?: (opts: any) => void }
-  }
+  interface Window { Jupiter?: { init?: (opts: any) => void } }
 }
 
 export default function Page() {
@@ -47,12 +46,21 @@ export default function Page() {
 
   return (
     <main className="screen">
-      {/* Background via globals.css (.bg) */}
       <div className="bg" aria-hidden />
 
       {/* Header */}
       <header className="topbar">
-        <div className="brand">TOILETCOIN</div>
+        {/* BRAND: logo only */}
+        <div className="brand">
+          <Image
+            src="/logo.png"
+            alt="Toiletcoin Logo"
+            width={160}
+            height={48}
+            priority
+            className="brand-logo"
+          />
+        </div>
 
         <button
           className={`hamburger ${menuOpen ? 'on' : ''}`}
@@ -77,7 +85,6 @@ export default function Page() {
         <h1 className="display">The Final Flush</h1>
         <p className="tag">Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.</p>
 
-        {/* Contract — big + copy-on-click */}
         <div className="contract">
           <div className="contract-label">Contract</div>
           <button className="contract-value" onClick={copyContract} title="Click to copy">
@@ -86,7 +93,6 @@ export default function Page() {
           <div className={`copied ${copied ? 'on' : ''}`}>Copied!</div>
         </div>
 
-        {/* Buy CTA — green */}
         <div className="cta-row">
           <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy Toiletcoin</button>
         </div>
@@ -230,7 +236,6 @@ function ContactJSON({ accessKey }: { accessKey: string }) {
 /** BUY — Jupiter plugin v1 (integrated mode) */
 function BuyPlugin() {
   useEffect(() => {
-    // Init once when the overlay mounts
     if (window.Jupiter?.init) {
       window.Jupiter.init({
         displayMode: 'integrated',
@@ -243,11 +248,7 @@ function BuyPlugin() {
   return (
     <div className="embed">
       <p className="muted">Swap via Jupiter.</p>
-      {/* Target container for plugin render */}
-      <div
-        id="jup-target"
-        style={{ width: '100%', maxWidth: 500, height: 600, margin: '0 auto' }}
-      />
+      <div id="jup-target" style={{ width: '100%', maxWidth: 500, height: 600, margin: '0 auto' }} />
       <div className="alt-links">
         Prefer another route?
         <a href="https://pump.fun/" target="_blank" rel="noreferrer">Pump.fun</a>
