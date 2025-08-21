@@ -10,13 +10,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ===== FULL-SCREEN RESPONSIVE BACKGROUND =====
-   Place these in /public:
-   - hero-desktop.jpg  (>=1920px wide)
-   - hero-tablet.jpg   (~1024–1280px wide)
-   - hero-mobile.jpg   (~640–750px wide)
-*/
-
+/* ===== FULL-SCREEN RESPONSIVE BACKGROUND ===== */
 .bg {
   position: fixed; inset: 0;
   background-color: #000;
@@ -72,13 +66,14 @@ body {
   .nav.open { display: flex }
 }
 
-/* Buttons — base style */
+/* Buttons — hover lighting + active state */
 .btn {
   appearance: none;
   border: 1px solid rgba(255,255,255,.18);
-  background: #333; /* default gray */
+  background: #16c784;
   color: #fff;
   padding: 10px 14px;
+  border-color: #16c784;
   border-radius: 10px;
   font-weight: 800; letter-spacing: .02em;
   cursor: pointer; text-decoration: none;
@@ -87,23 +82,9 @@ body {
 }
 .btn:hover { filter: brightness(1.07); box-shadow: 0 0 18px rgba(255, 210, 74, .35) }
 .btn:active { transform: translateY(1px) }
-
-/* Primary (yellow) */
 .btn.primary { background: #ffd24a; color: #111; border-color: #ffd24a }
 .btn.primary:hover { box-shadow: 0 0 22px rgba(255,210,74,.5) }
 .btn.navbtn.active { background: #ffd24a; color: #111; border-color: #ffd24a }
-
-/* ✅ Buy button — green like exchanges */
-.btn.buy {
-  background: #16c784;
-  color: #fff;
-  border: 1px solid #16c784;
-}
-.btn.buy:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 0 22px rgba(22, 199, 132, 0.55);
-}
-.btn.buy:active { transform: translateY(1px) }
 
 /* Center hero content */
 .center { text-align: center; width: min(920px, 92vw); margin-top: 8vh; z-index: 4 }
@@ -116,7 +97,7 @@ body {
 .cta-row { display: flex; justify-content: center; margin-top: 12px }
 .wide { min-width: 260px }
 
-/* Contract (big, copy on click) */
+/* Contract */
 .contract {
   position: relative; z-index: 4;
   margin: 18px auto 6px auto;
@@ -174,12 +155,12 @@ body {
 .panel-title { margin: 0; font-size: clamp(18px,2.6vw,24px); font-weight: 900; color: #fff }
 .btn.close { background: #111; border-color: rgba(255,255,255,.18); border-radius: 10px; padding: 6px 10px }
 
+/* Disable scroll inside Buy panel */
 .panel-body {
-  overflow: auto;  /* scroll INSIDE panel if needed */
+  overflow: hidden;
   padding: 16px;
 }
 
-/* Text blocks */
 .copy { line-height: 1.7; font-size: 15px }
 .paper {
   white-space: pre-wrap;
@@ -196,68 +177,16 @@ body {
 .frame iframe { width: 100%; height: 100%; border: 0 }
 
 /* Jupiter Terminal container */
-.terminal { width: 100%; height: 70vh; min-height: 520px; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
+.terminal {
+  width: 100%;
+  height: 65vh;
+  min-height: 420px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0,0,0,.6);
+}
 
 /* Alt links */
 .alt-links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
 .alt-links a { color: #ffd24a; font-weight: 800; text-decoration: none }
 .alt-links a:hover { text-decoration: underline }
-
-/* Footer */
-.footer {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  text-align: center;
-  padding: 8px;
-  font-size: 13px;
-  color: rgba(255,255,255,.75);
-  background: transparent;
-  z-index: 4;
-}
-.footnote { margin: 2px 0 }
-.linklike {
-  appearance: none;
-  background: none;
-  border: 0;
-  color: rgba(255,255,255,.9);
-  font: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.linklike:hover { filter: brightness(1.1) }
-
-/* Contact form */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 520px;   /* limit width */
-  margin: 0 auto;     /* center form horizontally */
-}
-
-.field { display: flex; flex-direction: column; gap: 6px }
-.field label { font-weight: 800; font-size: 12px; opacity: .9 }
-.field input,
-.field textarea {
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 10px;
-  padding: 10px 12px;
-  color: #fff;
-  outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
-.field input:focus,
-.field textarea:focus {
-  border-color: #ffd24a;
-  box-shadow: 0 0 0 3px rgba(255,210,74,.15);
-}
-.field input::placeholder,
-.field textarea::placeholder { color: rgba(255,255,255,.55) }
-
-.form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
-.form-error { color: #ff6b6b; font-weight: 700; margin: 6px 0 0 0 }
-.form.success { text-align: left; line-height: 1.6 }
-
-.hp { display: none } /* honeypot */
