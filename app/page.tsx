@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
-const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real mint
-const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';           // TODO: for Jupiter widget
-const FORMSPREE_ID = '<YOUR_FORMSPREE_ID>';          // e.g. "mxyzabcd" from https://formspree.io
+const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';    // TODO: real contract/mint
+const OUTPUT_MINT = '<YOUR_MINT_ADDRESS>';          // TODO: for Jupiter widget
+const WEB3FORMS_KEY = '<YOUR_WEB3FORMS_ACCESS_KEY>'; // ← paste your Web3Forms access_key here
 
 declare global {
   interface Window {
@@ -19,7 +19,7 @@ export default function Page() {
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Lock single-screen layout
+  // Single-screen layout: lock page scroll
   useEffect(() => {
     const prevHtml = document.documentElement.style.overflow;
     const prevBody = document.body.style.overflow;
@@ -54,7 +54,7 @@ export default function Page() {
 
   return (
     <main className="screen">
-      {/* Background (set in globals.css via .bg) */}
+      {/* Background (configured in globals.css via .bg) */}
       <div className="bg" aria-hidden />
 
       {/* Header */}
@@ -123,9 +123,13 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Footer (branding + email) */}
+      {/* Footer (branding + “email” opens Contact panel) */}
       <footer className="footer">
-        <p className="footnote">© 2025 toiletcoin.wtf · <a href="mailto:contact@toiletcoin.wtf">contact@toiletcoin.wtf</a></p>
+        <p className="footnote">© 2025 toiletcoin.wtf ·{' '}
+          <button className="linklike" onClick={() => setOpen('contact')}>
+            contact@toiletcoin.wtf
+          </button>
+        </p>
       </footer>
 
       {/* Overlays */}
@@ -149,7 +153,7 @@ export default function Page() {
               {open === 'wipepaper' && <Wipepaper />}
               {open === 'buy' && <Buy outputMint={OUTPUT_MINT} />}
               {open === 'chart' && <Chart />}
-              {open === 'contact' && <Contact formId={FORMSPREE_ID} />}
+              {open === 'contact' && <Contact accessKey={WEB3FORMS_KEY} />}
             </div>
           </div>
         </div>
@@ -243,8 +247,8 @@ function Chart() {
   );
 }
 
-/** CONTACT — static-friendly form to Formspree */
-function Contact({ formId }: { formId: string }) {
+/** CONTACT — Web3Forms */
+function Contact({ accessKey }: { accessKey: string }) {
   const [sent, setSent] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
@@ -256,21 +260,24 @@ function Contact({ formId }: { formId: string }) {
 
     const form = e.currentTarget;
     const data = new FormData(form);
+    data.append('access_key', accessKey);     // REQUIRED by Web3Forms
+    data.append('subject', 'Toiletcoin Contact'); // optional, helpful
+    // Honeypot field name used by Web3Forms is usually "botcheck" (anything hidden works)
+    // We already include a hidden field below.
 
     try {
-      const res = await fetch(`https://formspree.io/f/${formId}`, {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: data,
+        body: data
       });
       const json = await res.json();
-      if (res.ok) {
+      if (json?.success) {
         setSent(true);
         form.reset();
       } else {
-        setErr(json?.errors?.[0]?.message || 'Failed to send. Try again later.');
+        setErr(json?.message || 'Failed to send. Try again later.');
       }
-    } catch (e) {
+    } catch (_) {
       setErr('Network error. Please try again.');
     } finally {
       setSending(false);
@@ -288,8 +295,8 @@ function Contact({ formId }: { formId: string }) {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
-      {/* Honeypot for bots */}
-      <input type="text" name="_gotcha" className="hp" tabIndex={-1} autoComplete="off" />
+      {/* Honeypot (bot check) */}
+      <input type="checkbox" name="botcheck" className="hp" tabIndex={-1} autoComplete="off" />
 
       <div className="field">
         <label htmlFor="name">Name</label>
@@ -298,7 +305,7 @@ function Contact({ formId }: { formId: string }) {
 
       <div className="field">
         <label htmlFor="email">Email</label>
-        <input id="email" name="_replyto" type="email" required placeholder="you@example.com" />
+        <input id="email" name="email" type="email" required placeholder="you@example.com" />
       </div>
 
       <div className="field">
@@ -306,14 +313,11 @@ function Contact({ formId }: { formId: string }) {
         <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
       </div>
 
-      {/* Direct email route if Formspree fails */}
-      <input type="hidden" name="_subject" value="Toiletcoin Contact" />
-      <input type="hidden" name="_template" value="table" />
-
       <div className="form-row">
         <button className="btn buy" type="submit" disabled={sending}>
           {sending ? 'Sending…' : 'Send Message'}
         </button>
+        {/* Fallback direct email link */}
         <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
       </div>
 
