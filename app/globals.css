@@ -4,7 +4,7 @@ html, body { height: 100% }
 body {
   margin: 0;
   color: #f2f2f2;
-  background: #000; /* fallback */
+  background: #000;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
   line-height: 1.55;
 }
@@ -18,17 +18,51 @@ body {
 
 /* Screen lock / center */
 .screen { position: relative; min-height: 100vh; display: grid; place-items: center; padding: 16px }
+
+/* Header (no border lines) */
 .topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 5;
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 4vw;
-  background: linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.25), rgba(0,0,0,0));
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.2), rgba(0,0,0,0));
+  /* removed border-bottom */
 }
 .brand { font-weight: 1000; letter-spacing: .02em; color: #fff; font-size: clamp(18px,2.2vw,24px) }
-.nav { display: flex; gap: clamp(10px,2vw,16px); align-items: center; flex-wrap: wrap }
 
-/* Buttons — classic, with hover lighting + active state */
+/* Nav + hamburger */
+.nav { display: flex; gap: clamp(10px,2vw,16px); align-items: center; flex-wrap: wrap }
+.hamburger {
+  display: none;
+  width: 40px; height: 34px; border: 0; background: transparent; cursor: pointer; position: relative;
+}
+.hamburger span {
+  position: absolute; left: 8px; right: 8px; height: 2px; background: #fff; transition: transform .2s ease, opacity .2s ease;
+}
+.hamburger span:nth-child(1) { top: 10px }
+.hamburger span:nth-child(2) { top: 16px }
+.hamburger span:nth-child(3) { top: 22px }
+.hamburger.on span:nth-child(1) { transform: translateY(6px) rotate(45deg) }
+.hamburger.on span:nth-child(2) { opacity: 0 }
+.hamburger.on span:nth-child(3) { transform: translateY(-6px) rotate(-45deg) }
+
+/* Mobile nav behavior */
+@media (max-width: 720px) {
+  .hamburger { display: inline-block }
+  .nav {
+    position: absolute;
+    top: 56px; right: 4vw; left: 4vw;
+    background: rgba(10,10,10,.9);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .nav.open { display: flex }
+}
+
+/* Buttons — hover “lighting” + active state */
 .btn {
   appearance: none;
   border: 1px solid rgba(255,255,255,.18);
@@ -45,7 +79,7 @@ body {
 }
 .btn:hover {
   filter: brightness(1.07);
-  box-shadow: 0 0 18px rgba(255, 210, 74, .35); /* hover lighting */
+  box-shadow: 0 0 18px rgba(255, 210, 74, .35);
 }
 .btn:active { transform: translateY(1px) }
 .btn.primary {
@@ -120,21 +154,22 @@ body {
   opacity: 0;
   animation: pop .22s ease forwards;
 }
-@keyframes pop {
-  to { transform: translateY(0); opacity: 1 }
-}
+@keyframes pop { to { transform: translateY(0); opacity: 1 } }
+
 .panel-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 14px 16px;
+  /* removed divider border */
 }
 .panel-title { margin: 0; font-size: clamp(18px,2.6vw,24px); font-weight: 900; color: #fff }
 .btn.close { background: #111; border-color: rgba(255,255,255,.18); border-radius: 10px; padding: 6px 10px }
+
 .panel-body {
   overflow: auto;  /* scroll INSIDE panel only if needed */
   padding: 16px;
 }
 
-/* Text blocks */
+/* Text/blocks inside panels */
 .copy { line-height: 1.7; font-size: 15px }
 .paper {
   white-space: pre-wrap;
@@ -147,8 +182,13 @@ body {
 
 /* Embeds */
 .embed .muted { opacity: .8; margin-bottom: 10px }
-.frame { width: 100%; height: 70vh; min-height: 520px; border: 2px solid #ffd24a; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
+.frame { width: 100%; height: 70vh; min-height: 520px; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
 .frame iframe { width: 100%; height: 100%; border: 0 }
+
+/* Jupiter Terminal container (no visible border) */
+.terminal { width: 100%; height: 70vh; min-height: 520px; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.6) }
+
+/* Alt links */
 .alt-links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
 .alt-links a { color: #ffd24a; font-weight: 800; text-decoration: none }
 .alt-links a:hover { text-decoration: underline }
