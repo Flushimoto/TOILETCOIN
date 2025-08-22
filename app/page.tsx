@@ -49,18 +49,7 @@ export default function Page() {
       <div className="bg" aria-hidden />
 
       {/* Header */}
-      <header className="topbar">
-        {/* BRAND: logo only */}
-          <Image
-            src="/logo.png"
-            alt="Toiletcoin Logo"
-            width={160}
-            height={48}
-            priority
-            className="brand-logo"
-          />
-        </div>
-
+      <header className="topbar"
         <button
           className={`hamburger ${menuOpen ? 'on' : ''}`}
           aria-label="Menu"
