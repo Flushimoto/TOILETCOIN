@@ -41,7 +41,7 @@ body {
 /* Header — clean */
 .topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 5;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: flex-end; /* 👈 was space-between */
   padding: 10px 4vw; background: transparent;
 }
 .brand { font-weight: 1000; letter-spacing: .02em; color: #fff; font-size: clamp(18px,2.2vw,24px) }
