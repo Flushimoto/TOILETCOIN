@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
@@ -9,7 +8,9 @@ const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...';     // TODO: real contract
 const WEB3FORMS_KEY = 'f8741ccf-8e2d-476e-920b-aac3c75eaf69'; // contact overlay key
 
 declare global {
-  interface Window { Jupiter?: { init?: (opts: any) => void } }
+  interface Window {
+    Jupiter?: { init?: (opts: any) => void };
+  }
 }
 
 export default function Page() {
@@ -40,16 +41,19 @@ export default function Page() {
 
   function copyContract() {
     navigator.clipboard.writeText(CONTRACT).then(() => {
-      setCopied(true); setTimeout(() => setCopied(false), 1200);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1200);
     }).catch(() => {});
   }
 
   return (
     <main className="screen">
+      {/* Fullscreen background (set in globals.css via .bg) */}
       <div className="bg" aria-hidden />
 
-      {/* Header */}
-      <header className="topbar"
+      {/* Header (no logo) */}
+      <header className="topbar">
+        {/* Hamburger (visible on mobile only per CSS) */}
         <button
           className={`hamburger ${menuOpen ? 'on' : ''}`}
           aria-label="Menu"
@@ -59,10 +63,30 @@ export default function Page() {
         </button>
 
         <nav className={`nav ${menuOpen ? 'open' : ''}`}>
-          <button className={`btn navbtn ${open === 'story' ? 'active' : ''}`} onClick={() => { setOpen('story'); setMenuOpen(false); }}>Story</button>
-          <button className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`} onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}>Wipepaper</button>
-          <button className={`btn navbtn ${open === 'chart' ? 'active' : ''}`} onClick={() => { setOpen('chart'); setMenuOpen(false); }}>Chart</button>
-          <button className={`btn navbtn ${open === 'contact' ? 'active' : ''}`} onClick={() => { setOpen('contact'); setMenuOpen(false); }}>Contact</button>
+          <button
+            className={`btn navbtn ${open === 'story' ? 'active' : ''}`}
+            onClick={() => { setOpen('story'); setMenuOpen(false); }}
+          >
+            Story
+          </button>
+          <button
+            className={`btn navbtn ${open === 'wipepaper' ? 'active' : ''}`}
+            onClick={() => { setOpen('wipepaper'); setMenuOpen(false); }}
+          >
+            Wipepaper
+          </button>
+          <button
+            className={`btn navbtn ${open === 'chart' ? 'active' : ''}`}
+            onClick={() => { setOpen('chart'); setMenuOpen(false); }}
+          >
+            Chart
+          </button>
+          <button
+            className={`btn navbtn ${open === 'contact' ? 'active' : ''}`}
+            onClick={() => { setOpen('contact'); setMenuOpen(false); }}
+          >
+            Contact
+          </button>
           <a className="btn navbtn" href="https://x.com/" target="_blank" rel="noreferrer">X</a>
           <a className="btn navbtn" href="https://t.me/" target="_blank" rel="noreferrer">TG</a>
         </nav>
@@ -71,7 +95,9 @@ export default function Page() {
       {/* Hero */}
       <section className="center">
         <h1 className="display">The Final Flush</h1>
-        <p className="tag">Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.</p>
+        <p className="tag">
+          Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.
+        </p>
 
         <div className="contract">
           <div className="contract-label">Contract</div>
@@ -82,7 +108,9 @@ export default function Page() {
         </div>
 
         <div className="cta-row">
-          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy $TOILETCOIN</button>
+          <button className="btn buy wide" onClick={() => setOpen('buy')}>
+            Buy Toiletcoin
+          </button>
         </div>
       </section>
 
@@ -90,7 +118,9 @@ export default function Page() {
       <footer className="footer">
         <p className="footnote">
           © 2025 toiletcoin.wtf ·{' '}
-          <button className="linklike" onClick={() => setOpen('contact')}>contact@toiletcoin.wtf</button>
+          <button className="linklike" onClick={() => setOpen('contact')}>
+            contact@toiletcoin.wtf
+          </button>
         </p>
       </footer>
 
@@ -212,7 +242,9 @@ function ContactJSON({ accessKey }: { accessKey: string }) {
           <textarea id="message" name="message" required placeholder="Say hi, propose chaos, request a shrine…" rows={6} />
         </div>
         <div className="form-row">
-          <button className="btn buy" type="submit" disabled={sending}>{sending ? 'Sending…' : 'Send Message'}</button>
+          <button className="btn buy" type="submit" disabled={sending}>
+            {sending ? 'Sending…' : 'Send Message'}
+          </button>
           <a className="btn" href="mailto:contact@toiletcoin.wtf">Or email directly</a>
         </div>
         {result && <p className="form-error" style={{ marginTop: 8 }}>{result}</p>}
