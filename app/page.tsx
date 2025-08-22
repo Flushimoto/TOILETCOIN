@@ -1,25 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation'; // 👈 import
+import NavBar from '../components/NavBar';
+import Overlay from '../components/Overlay';
+import PanelStory from '../components/PanelStory';
+import PanelWipepaper from '../components/PanelWipepaper';
+import PanelChart from '../components/PanelChart';
+import PanelContact from '../components/PanelContact';
+import PanelBuy from '../components/PanelBuy';
+import { SITE } from '../lib/config';
 
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
 export default function Page() {
   const [open, setOpen] = useState<Panel>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const searchParams = useSearchParams(); // 👈
-
-  // On load: check ?panel=...
-  useEffect(() => {
-    const panel = searchParams.get('panel');
-    if (panel === 'story' || panel === 'wipepaper' || panel === 'buy' || panel === 'chart' || panel === 'contact') {
-      setOpen(panel);
-    }
-  }, [searchParams]);
-
-  // Lock single-screen layout
+  // Keep single-screen (no page scroll)
   useEffect(() => {
     const prevHtml = document.documentElement.style.overflow;
     const prevBody = document.body.style.overflow;
@@ -31,12 +28,43 @@ export default function Page() {
     };
   }, []);
 
-  // ESC closes overlay
+  // --- Deep linking: read ?panel=... from URL on load and when back/forward is used
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    function syncFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const p = (params.get('panel') || '').toLowerCase();
+        if (['story','wipepaper','buy','chart','contact'].includes(p)) {
+          setOpen(p as Exclude<Panel, null>);
+        } else {
+          setOpen(null);
+        }
+      } catch {
+        setOpen(null);
+      }
+    }
+    // initial
+    syncFromUrl();
+    // back/forward
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
   }, []);
+
+  function setUrlPanel(p: Panel) {
+    const url = new URL(window.location.href);
+    if (p) url.searchParams.set('panel', p);
+    else url.searchParams.delete('panel');
+    window.history.replaceState({}, '', url.toString());
+  }
+
+  function openPanel(p: Exclude<Panel, null>) {
+    setOpen(p);
+    setUrlPanel(p);
+  }
+  function closePanel() {
+    setOpen(null);
+    setUrlPanel(null);
+  }
 
   function copyContract() {
     navigator.clipboard.writeText(SITE.contract).then(() => {
@@ -50,13 +78,15 @@ export default function Page() {
       {/* Background */}
       <div className="bg" aria-hidden />
 
-      {/* Nav (no logo) */}
-      <NavBar onOpen={(p) => setOpen(p)} />
+      {/* Nav (right-aligned; mobile menu handled inside) */}
+      <NavBar onOpen={(p) => openPanel(p)} />
 
       {/* Hero */}
       <section className="center">
         <h1 className="display">The Final Flush</h1>
-        <p className="tag">Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.</p>
+        <p className="tag">
+          Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.
+        </p>
 
         <div className="contract">
           <div className="contract-label">Contract</div>
@@ -67,7 +97,9 @@ export default function Page() {
         </div>
 
         <div className="cta-row">
-          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy Toiletcoin</button>
+          <button className="btn buy wide" onClick={() => openPanel('buy')}>
+            Buy Toiletcoin
+          </button>
         </div>
       </section>
 
@@ -75,33 +107,35 @@ export default function Page() {
       <footer className="footer">
         <p className="footnote">
           © 2025 {SITE.domain} ·{' '}
-          <button className="linklike" onClick={() => setOpen('contact')}>contact@{SITE.domain}</button>
+          <button className="linklike" onClick={() => openPanel('contact')}>
+            contact@{SITE.domain}
+          </button>
         </p>
       </footer>
 
-      {/* Overlays */}
+      {/* Overlays (URL-synced) */}
       {open === 'story' && (
-        <Overlay title="The Prophecy of Satoshi Flushimoto" onClose={() => setOpen(null)}>
+        <Overlay title="The Prophecy of Satoshi Flushimoto" onClose={closePanel}>
           <PanelStory />
         </Overlay>
       )}
       {open === 'wipepaper' && (
-        <Overlay title="Wipepaper" onClose={() => setOpen(null)}>
+        <Overlay title="Wipepaper" onClose={closePanel}>
           <PanelWipepaper />
         </Overlay>
       )}
       {open === 'chart' && (
-        <Overlay title="Chart" onClose={() => setOpen(null)}>
+        <Overlay title="Chart" onClose={closePanel}>
           <PanelChart />
         </Overlay>
       )}
       {open === 'contact' && (
-        <Overlay title="Contact Us" onClose={() => setOpen(null)}>
+        <Overlay title="Contact Us" onClose={closePanel}>
           <PanelContact />
         </Overlay>
       )}
       {open === 'buy' && (
-        <Overlay title="Buy Toiletcoin" onClose={() => setOpen(null)}>
+        <Overlay title="Buy Toiletcoin" onClose={closePanel}>
           <PanelBuy />
         </Overlay>
       )}
