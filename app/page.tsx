@@ -82,7 +82,7 @@ export default function Page() {
         </div>
 
         <div className="cta-row">
-          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy Toiletcoin</button>
+          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy $TOILETCOIN</button>
         </div>
       </section>
 
