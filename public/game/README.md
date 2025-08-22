@@ -14,3 +14,9 @@ This folder contains the pixel art sprites and sound effects used in the **“Bo
 
 ## Usage
 All assets are loaded in the canvas-based mini-game at:
+
+No extra libraries are needed — everything is vanilla Canvas + HTML5 Audio.
+
+---
+
+🚽 **Lore tie-in**: Catch and flush away shitcoins to clean the blockchain. When you lose, the Pump.fun overflow message will appear!
