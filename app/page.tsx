@@ -1,20 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import NavBar from '../components/NavBar';
-import Overlay from '../components/Overlay';
-import PanelStory from '../components/PanelStory';
-import PanelWipepaper from '../components/PanelWipepaper';
-import PanelChart from '../components/PanelChart';
-import PanelContact from '../components/PanelContact';
-import PanelBuy from '../components/PanelBuy';
-import { SITE } from '../lib/config';
+import { useSearchParams } from 'next/navigation'; // 👈 import
 
 type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
 
 export default function Page() {
   const [open, setOpen] = useState<Panel>(null);
-  const [copied, setCopied] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const searchParams = useSearchParams(); // 👈
+
+  // On load: check ?panel=...
+  useEffect(() => {
+    const panel = searchParams.get('panel');
+    if (panel === 'story' || panel === 'wipepaper' || panel === 'buy' || panel === 'chart' || panel === 'contact') {
+      setOpen(panel);
+    }
+  }, [searchParams]);
 
   // Lock single-screen layout
   useEffect(() => {
