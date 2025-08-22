@@ -50,6 +50,7 @@ export default function NavBar({ onOpen }: { onOpen: (p: Panel) => void }) {
         <button className="btn navbtn" onClick={() => { onOpen('wipepaper'); setMenuOpen(false); }}>Wipepaper</button>
         <button className="btn navbtn" onClick={() => { onOpen('chart'); setMenuOpen(false); }}>Chart</button>
         <button className="btn navbtn" onClick={() => { onOpen('contact'); setMenuOpen(false); }}>Contact</button>
+        <a className="btn navbtn" href="/boring">Boring?</a>
         <a className="btn navbtn" href={SITE.socials.x} target="_blank" rel="noreferrer">X</a>
         <a className="btn navbtn" href={SITE.socials.tg} target="_blank" rel="noreferrer">TG</a>
       </nav>
