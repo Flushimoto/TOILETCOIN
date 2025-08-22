@@ -1,29 +1,37 @@
-// app/layout.tsx
-import "./globals.css";
-import type { Metadata } from "next";
+import './globals.css';
+import type { Metadata } from 'next';
+import { SITE } from '../lib/config';
 
 export const metadata: Metadata = {
-  title: "ToiletCoin",
-  description: "The People's Coin from the People's Throne",
+  title: `${SITE.name} — The Final Flush`,
+  description: 'Born mid-poop by Satoshi Flushimoto. Utility: none. Lore: everything.',
+  metadataBase: new URL(`https://${SITE.domain}`),
+  openGraph: {
+    title: `${SITE.name} — The Final Flush`,
+    description: 'Born mid-poop by Satoshi Flushimoto. Utility: none. Lore: everything.',
+    url: `https://${SITE.domain}`,
+    siteName: SITE.name,
+    images: ['/open-graph.png'], // add later if you want
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE.name} — The Final Flush`,
+    description: 'Born mid-poop by Satoshi Flushimoto.',
+    images: ['/open-graph.png'],
+  },
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        {/* Favicon & Icons */}
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="icon" href="/favicon.ico" />
-
-        {/* Jupiter Widget Script (already required) */}
-        <script src="https://plugin.jup.ag/plugin-v1.js"></script>
+        <link rel="preconnect" href="https://terminal.jup.ag" />
+        {/* Jupiter Terminal script (v2) */}
+        <script defer src="https://terminal.jup.ag/main-v2.js"></script>
       </head>
       <body>{children}</body>
     </html>
