@@ -51,7 +51,6 @@ export default function Page() {
       {/* Header */}
       <header className="topbar">
         {/* BRAND: logo only */}
-        <div className="brand">
           <Image
             src="/logo.png"
             alt="Toiletcoin Logo"
