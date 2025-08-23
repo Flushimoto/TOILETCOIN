@@ -8,9 +8,10 @@ import PanelWipepaper from '../components/PanelWipepaper';
 import PanelChart from '../components/PanelChart';
 import PanelContact from '../components/PanelContact';
 import PanelBuy from '../components/PanelBuy';
+import PanelGame from '../components/PanelGame';
 import { SITE } from '../lib/config';
 
-type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
+type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | 'boring' | null;
 
 export default function Page() {
   const [open, setOpen] = useState<Panel>(null);
@@ -26,24 +27,24 @@ export default function Page() {
     return () => { document.documentElement.style.overflow = prevHtml; document.body.style.overflow = prevBody; };
   }, []);
 
-  // deep-link
+  // deep-link sync
   useEffect(() => {
-    function syncFromUrl() {
+    function sync() {
       const params = new URLSearchParams(window.location.search);
       const p = (params.get('panel') || '').toLowerCase();
-      if (['story','wipepaper','buy','chart','contact'].includes(p)) setOpen(p as any);
+      if (['story','wipepaper','buy','chart','contact','boring'].includes(p)) setOpen(p as Panel);
       else setOpen(null);
     }
-    syncFromUrl();
-    window.addEventListener('popstate', syncFromUrl);
-    return () => window.removeEventListener('popstate', syncFromUrl);
+    sync();
+    window.addEventListener('popstate', sync);
+    return () => window.removeEventListener('popstate', sync);
   }, []);
 
-  // load best game score (if any)
+  // best score
   useEffect(() => {
     const s = Number(localStorage.getItem('toiletcoin_best') || '0');
     if (!Number.isNaN(s) && s > 0) setBestScore(s);
-  }, []);
+  }, [open]);
 
   function setUrlPanel(p: Panel) {
     const url = new URL(window.location.href);
@@ -64,7 +65,7 @@ export default function Page() {
     <main className="screen">
       <div className="bg" aria-hidden />
 
-      <NavBar onOpen={(p) => openPanel(p)} />
+      <NavBar onOpen={openPanel} />
 
       <section className="center">
         <h1 className="display">The Final Flush</h1>
@@ -85,7 +86,7 @@ export default function Page() {
               Best Game Score: <strong style={{ marginLeft: 6 }}>{bestScore}</strong>
             </div>
           )}
-          <a className="btn" href="/boring">Play “Flush the Shitcoins”</a>
+          <button className="btn" onClick={() => openPanel('boring')}>Play “Flush the Shitcoins”</button>
         </div>
       </section>
 
@@ -110,6 +111,9 @@ export default function Page() {
       )}
       {open === 'buy' && (
         <Overlay title="Buy Toiletcoin" onClose={closePanel}><PanelBuy /></Overlay>
+      )}
+      {open === 'boring' && (
+        <Overlay title="Flush the Shitcoins" onClose={closePanel}><PanelGame /></Overlay>
       )}
     </main>
   );
