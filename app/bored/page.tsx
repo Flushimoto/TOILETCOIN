@@ -16,8 +16,7 @@ export default function Page() {
       <div>
         <h1 style={{ margin: 0 }}>Bored?</h1>
         <p style={{ opacity: 0.8 }}>
-          Mini-game coming soon. For now, go flush the chart or read the
-          Wipepaper.
+          Mini-game coming soon. For now, go flush the chart or read the Wipepaper.
         </p>
       </div>
     </div>
