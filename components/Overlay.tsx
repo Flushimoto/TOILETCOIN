@@ -3,7 +3,7 @@
 export default function Overlay({
   title,
   onClose,
-  children,
+  children
 }: {
   title: string;
   onClose: () => void;
@@ -17,7 +17,9 @@ export default function Overlay({
           <h2 className="panel-title">{title}</h2>
           <button className="btn close" onClick={onClose} aria-label="Close">✕</button>
         </div>
-        <div className="panel-body">{children}</div>
+        <div className="panel-body">
+          {children}
+        </div>
       </div>
     </div>
   );
