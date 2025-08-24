@@ -8,15 +8,14 @@ import PanelWipepaper from '../components/PanelWipepaper';
 import PanelChart from '../components/PanelChart';
 import PanelContact from '../components/PanelContact';
 import PanelBuy from '../components/PanelBuy';
-import PanelGame from '../components/PanelGame';
-import { SITE } from '../lib/config';
 
-type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | 'boring' | null;
+type Panel = 'story' | 'wipepaper' | 'buy' | 'chart' | 'contact' | null;
+
+const CONTRACT = 'So1aNaPUMPFUNCONTRACTADDR...'; // put real one when ready
 
 export default function Page() {
   const [open, setOpen] = useState<Panel>(null);
   const [copied, setCopied] = useState(false);
-  const [bestScore, setBestScore] = useState<number | null>(null);
 
   // lock single-screen
   useEffect(() => {
@@ -27,46 +26,27 @@ export default function Page() {
     return () => { document.documentElement.style.overflow = prevHtml; document.body.style.overflow = prevBody; };
   }, []);
 
-  // deep-link sync
+  // ESC closes panel
   useEffect(() => {
-    function sync() {
-      const params = new URLSearchParams(window.location.search);
-      const p = (params.get('panel') || '').toLowerCase();
-      if (['story','wipepaper','buy','chart','contact','boring'].includes(p)) setOpen(p as Panel);
-      else setOpen(null);
-    }
-    sync();
-    window.addEventListener('popstate', sync);
-    return () => window.removeEventListener('popstate', sync);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // best score
-  useEffect(() => {
-    const s = Number(localStorage.getItem('toiletcoin_best') || '0');
-    if (!Number.isNaN(s) && s > 0) setBestScore(s);
-  }, [open]);
-
-  function setUrlPanel(p: Panel) {
-    const url = new URL(window.location.href);
-    if (p) url.searchParams.set('panel', p);
-    else url.searchParams.delete('panel');
-    window.history.replaceState({}, '', url.toString());
-  }
-  function openPanel(p: Exclude<Panel, null>) { setOpen(p); setUrlPanel(p); }
-  function closePanel() { setOpen(null); setUrlPanel(null); }
-
   function copyContract() {
-    navigator.clipboard.writeText(SITE.contract).then(() => {
+    navigator.clipboard.writeText(CONTRACT).then(() => {
       setCopied(true); setTimeout(() => setCopied(false), 1200);
     }).catch(() => {});
   }
 
   return (
     <main className="screen">
+      {/* Background (responsive via CSS) */}
       <div className="bg" aria-hidden />
 
-      <NavBar onOpen={openPanel} />
+      <NavBar onOpen={setOpen} />
 
+      {/* Hero */}
       <section className="center">
         <h1 className="display">The Final Flush</h1>
         <p className="tag">Born mid-poop by Satoshi Flushimoto. 1,000,000,000 supply. Utility: none. Lore: everything.</p>
@@ -74,46 +54,49 @@ export default function Page() {
         <div className="contract">
           <div className="contract-label">Contract</div>
           <button className="contract-value" onClick={copyContract} title="Click to copy">
-            <span className="mono">{SITE.contract}</span>
+            <span className="mono">{CONTRACT}</span>
           </button>
           <div className={`copied ${copied ? 'on' : ''}`}>Copied!</div>
         </div>
 
-        <div className="cta-row" style={{ gap: 12, flexWrap: 'wrap' }}>
-          <button className="btn buy wide" onClick={() => openPanel('buy')}>Buy Toiletcoin</button>
-          {bestScore !== null && (
-            <div className="btn" style={{ cursor: 'default' }}>
-              Best Game Score: <strong style={{ marginLeft: 6 }}>{bestScore}</strong>
-            </div>
-          )}
-          <button className="btn" onClick={() => openPanel('boring')}>Play “Flush the Shitcoins”</button>
+        <div className="cta-row" style={{ marginTop: 14 }}>
+          <button className="btn buy wide" onClick={() => setOpen('buy')}>Buy Toiletcoin</button>
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="footer">
         <p className="footnote">
-          © 2025 {SITE.domain} ·{' '}
-          <button className="linklike" onClick={() => openPanel('contact')}>contact@{SITE.domain}</button>
+          © 2025 toiletcoin.wtf ·{' '}
+          <button className="linklike" onClick={() => setOpen('contact')}>contact@toiletcoin.wtf</button>
         </p>
       </footer>
 
+      {/* Panels */}
       {open === 'story' && (
-        <Overlay title="The Prophecy of Satoshi Flushimoto" onClose={closePanel}><PanelStory /></Overlay>
+        <Overlay title="The Prophecy of Satoshi Flushimoto" onClose={() => setOpen(null)}>
+          <PanelStory />
+        </Overlay>
       )}
       {open === 'wipepaper' && (
-        <Overlay title="Wipepaper" onClose={closePanel}><PanelWipepaper /></Overlay>
+        <Overlay title="Wipepaper" onClose={() => setOpen(null)}>
+          <PanelWipepaper />
+        </Overlay>
       )}
       {open === 'chart' && (
-        <Overlay title="Chart" onClose={closePanel}><PanelChart /></Overlay>
+        <Overlay title="Chart" onClose={() => setOpen(null)}>
+          <PanelChart />
+        </Overlay>
       )}
       {open === 'contact' && (
-        <Overlay title="Contact Us" onClose={closePanel}><PanelContact /></Overlay>
+        <Overlay title="Contact Us" onClose={() => setOpen(null)}>
+          <PanelContact />
+        </Overlay>
       )}
       {open === 'buy' && (
-        <Overlay title="Buy Toiletcoin" onClose={closePanel}><PanelBuy /></Overlay>
-      )}
-      {open === 'boring' && (
-        <Overlay title="Flush the Shitcoins" onClose={closePanel}><PanelGame /></Overlay>
+        <Overlay title="Buy Toiletcoin" onClose={() => setOpen(null)}>
+          <PanelBuy />
+        </Overlay>
       )}
     </main>
   );
